@@ -23,30 +23,28 @@ require 'bin/utilities'
 
 class Block # {{{
 
-    # the blockname format is not specified. It can be with ending or without
     def initialize (blockname) # {{{
-        # if the blockname with ending, it'll be cutted
+        puts blockname
         if blockname =~ /.*\.#{$BLOCK_POSTFIX}$/
-            blockname = blockname[0..-1*($BLOCK_POSTFIX.length+2)]
+            blockname = blockname[0..-5]
+            puts blockname
+            puts $BLOCK_POSTFIX.length
         end
         
         if Utils.validate blockname
             @blockname = blockname
-            @blockfqn = File.join($BLOCK_PATH,blockname,$BLOCK_POSTFIX)
-            @blocksrc = "blablub\nundsonstso"
+            puts 'valid '+blockname
         else
+            puts 'invalid '+blockname
             raise ArgumentError, 'blockname invalid'
         end
     end # }}}
 
     def dump # {{{
-        dumpfile = File.new(@blockfqn,File::WRONLY|File::TRUNC|File::CREAT)
-        puts 'woot'
-        @blocksrc.each {|l| puts l}
+        
     end # }}}
 
     def load # {{{
-
     end # }}}
 
     def html # {{{
@@ -60,7 +58,7 @@ end # }}}
 def getBlocks # {{{
 
     blocks = Array.new
-    Dir.new($BLOCK_PATH).entries.reverse.select {|d| d =~ /.*\.#{$BLOCK_POSTFIX}$/ }.each {|d| blocks += [Block.new d]}
+    Dir.new($BLOCK_PATH).entries.reverse.select{|d| d =~ /.*\.#{$BLOCK_POSTFIX}$/ }.each {|d| blocks += [Block.new d]}
 
 end # }}}
 
