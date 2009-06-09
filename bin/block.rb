@@ -8,14 +8,19 @@
 #   Block. This would cause a great modularity.
 #
 
-# TODO: outsourcing
-# helper for name validation, returns true if name ok
-def validate (name) # {{{
-    (blockname =~ /^\w+$/)
-end # }}}
+# TODO: all configuration parameters are listed below. they need to be
+# substituted through the config class
+#  autocmd FileType ruby               map <C-f> :!ruby %<CR>
+#  autocmd FileType ruby               map <C-g> :!ruby -c%<CR>
 
 
+$BLOCK_PATH = 'blocks'
+$BLOCK_POSTFIX = 'blk'
 
+
+require 'utilities'
+
+Utils.validate "alpanum"
 
 class Block # {{{
 
@@ -23,7 +28,7 @@ class Block # {{{
         if validate blockname
             @blockname = blockname
         else
-            raise ArgumentError, "blockname invalid"
+            raise ArgumentError, 'blockname invalid'
         end
     end # }}}
 
@@ -34,5 +39,18 @@ class Block # {{{
     def load # {{{
     end # }}}
 
+    def html # {{{
+    end # }}}
+
+
 end # }}}
+
+
+# returns a list with instances of all blocks
+def getBlocks # {{{
+
+    Dir.new($BLOCK_PATH).entries.select{|d| d =~ /.*\.#{$BLOCK_POSTFIX}$/ }.each {|d|}
+
+end # }}}
+
 
