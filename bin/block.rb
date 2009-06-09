@@ -7,7 +7,6 @@
 #   also it is planned to use different types of Blocks which can derive from
 #   Block. This would cause a great modularity.
 #
-
 # TODO: all configuration parameters are listed below. they need to be
 # substituted through the config class
 #  autocmd FileType ruby               map <C-f> :!ruby %<CR>
@@ -27,12 +26,14 @@ class Block # {{{
     def initialize (blockname) # {{{
         # if the blockname with ending, it'll be cutted
         if blockname =~ /.*\.#{$BLOCK_POSTFIX}$/
+            @blockfqn = File.join($BLOCK_PATH,blockname)
             blockname = blockname[0..-1*($BLOCK_POSTFIX.length+2)]
+        else
+            @blockfqn = File.join($BLOCK_PATH,blockname+'.'+$BLOCK_POSTFIX)
         end
         
         if Utils.validate blockname
             @blockname = blockname
-            @blockfqn = File.join($BLOCK_PATH,blockname,$BLOCK_POSTFIX)
             @blocksrc = "blablub\nundsonstso"
         else
             raise ArgumentError, 'blockname invalid'
@@ -40,9 +41,11 @@ class Block # {{{
     end # }}}
 
     def dump # {{{
-        dumpfile = File.new(@blockfqn,File::WRONLY|File::TRUNC|File::CREAT)
-        puts 'woot'
-        @blocksrc.each {|l| puts l}
+        File.open(@blockfqn,File::WRONLY|File::TRUNC|File::CREAT) do |f|
+          puts 'woot'
+          @blocksrc.each {|l| f << l}
+        end
+
     end # }}}
 
     def load # {{{
@@ -59,8 +62,9 @@ end # }}}
 # returns a list with instances of all blocks
 def getBlocks # {{{
 
-    blocks = Array.new
-    Dir.new($BLOCK_PATH).entries.reverse.select {|d| d =~ /.*\.#{$BLOCK_POSTFIX}$/ }.each {|d| blocks += [Block.new d]}
+    blocks = []
+    Dir.new($BLOCK_PATH).entries.reverse.select {|d| d =~ /.*\.#{$BLOCK_POSTFIX}$/ }.each {|d| blocks << Block.new(d)}
+    blocks
 
 end # }}}
 
