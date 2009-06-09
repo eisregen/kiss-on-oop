@@ -1,16 +1,18 @@
 #
 # class Block
 #
+#   Author:     Jakob Holderbaum
+#   Contact:    privat (at) techfolio.de | irc: #linux on xinutec.org
+#
+#
 #   'Block' representates a block. Through the different methods it works as an
 #   layer between the several files per block and the application itself.
 #
 #   also it is planned to use different types of Blocks which can derive from
 #   Block. This would cause a great modularity.
 #
-# TODO: all configuration parameters are listed below. they need to be
-# substituted through the config class
-#  autocmd FileType ruby               map <C-f> :!ruby %<CR>
-#  autocmd FileType ruby               map <C-g> :!ruby -c%<CR>
+#   TODO:   all configuration parameters are listed below. they need to be
+#           substituted through the config class
 
 
 $BLOCK_PATH = 'blocks'
