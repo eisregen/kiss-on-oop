@@ -5,7 +5,7 @@ page:
     copyright:      'Jakob Holderbaum'
  
 options:
-    app_title:        true    # pages append their title to the main title
+    app_title:      true    # pages append their title to the main title
     separator:      ' > '   # maintitle[separator]subtitle
  
  
@@ -14,19 +14,16 @@ options:
 #  you're doing
  
 html:
-    placeholders:
-        title:          '{{TITLE}}'
-        navlist:        '{{NAVIGATION}}'
-        author:         '{{AUTHOR}}'
-        date:           '{{DATE}}'
-        dateformat:     '%d.%m.%Y - %H:%M'    # as given from strftime
+    title:          '{{TITLE}}'
+    navlist:        '{{NAVIGATION}}'
+    author:         '{{AUTHOR}}'
+    date:           '{{DATE}}'
+    dateformat:     '%d.%m.%Y - %H:%M'    # as given from strftime
  
-    css_ids:
-        navlist:        'navigation'
+    css_nav:        'navigation'
  
-    css_classes:
-        nav_elem_sel:   'elem_sel'
-        nav_elem_unsel: 'elem_unsel'
+    css_nav_elem_sel:   'elem_sel'
+    css_nav_elem_unsel: 'elem_unsel'
  
 
 

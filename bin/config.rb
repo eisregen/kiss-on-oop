@@ -1,3 +1,16 @@
+#
+# class Configuration
+#
+#   Author:     Nils Schweinsberg
+#   Contact:    mail (at) n-sch.de
+#
+#   The "Configuration" class Offers an easy way for the configuration of the
+#   KISS-CMS.
+#
+#   TODO: Correctly merge defaults with config-file
+#         (more)
+#
+
 require 'yaml'
 
 
@@ -25,7 +38,7 @@ class Configuration
         @system = CSystem.new(@conf["system"])
 
         # Page values
-        @page   = CPage.new(@conf["page"].merge!(@conf["options"]))
+        @page   = CPage.new(@conf["page"], @conf["options"])
 
         # HTML values
         @html   = CHTML.new(@conf["html"])
@@ -61,7 +74,7 @@ class CSystem
         # other
         @order      = hash["page_order"]
         @extensions = hash["extensions"]
-        @environment = hash["environment"]
+        @editor     = hash["editor"]
 
     end
 
@@ -76,20 +89,21 @@ class CPage
     attr_accessor :description  # description
     attr_accessor :author       # author
     attr_accessor :copyright    # copyright
+
     attr_accessor :append       # append title?
     attr_accessor :separator    # maintitle separator
 
-    def initialize (hash)
+    def initialize (hashPage, hashOpts)
 
         # Asign values
-        @title      = hash["title"]
-        @description = hash["description"]
-        @author     = hash["author"]
-        @copyright  = hash["copyright"]
+        @title      = hashPage["title"]
+        @description = hashPage["description"]
+        @author     = hashPage["author"]
+        @copyright  = hashPage["copyright"]
 
         # Other options
-        @append     = hash["app_title"]
-        @separator  = hash["separator"]
+        @append     = hashOpts["app_title"]
+        @separator  = hashOpts["separator"]
 
     end
 end
