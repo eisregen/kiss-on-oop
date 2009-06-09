@@ -1,6 +1,19 @@
 KISS - A simple, lighweight and modular Ruby CMS
 ================================================
 
+ DEPENDENCIES
+
+    your system should have installed the following packages:
+
+        - Ruby
+        - Rubygems
+
+    After that, the following gems are needed (install with 'gem install name')
+
+        - RedCloth
+
+
+ [...]
     
   Modular and objectoriented redesign is in progress
 
