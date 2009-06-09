@@ -1,0 +1,61 @@
+#
+# default Configuration
+#
+#   DO *NOT* CHANGE THIS FILE
+#
+#   If you want to adjust these settings put them in config.yaml in the core
+#   directory of KISS
+#
+
+
+page:
+
+    title:              'Follow the KISS'
+    description:        'Empty description'
+    author:             'Jakob Holderbaum'
+    copyright:          'Jakob Holderbaum'
+ 
+
+options:
+
+    app_title:          true    # append page title to main title?
+    separator:          ' > '   # maintitle [separator] subtitle
+ 
+ 
+html:
+
+    # Placeholders inside the HTML files
+    title:              '{{TITLE}}'
+    navlist:            '{{NAVIGATION}}'
+    author:             '{{AUTHOR}}'
+    date:               '{{DATE}}'
+    dateformat:         '%d.%m.%Y - %H:%M' # as given from strftime
+ 
+    # CSS stuff
+    css_nav:            'navigation'
+    css_nav_elem_sel:   'elem_sel'
+    css_nav_elem_unsel: 'elem_unsel'
+ 
+
+system:
+
+    # File paths
+    paths:
+        html:           'web'
+        pages:          'pgs'
+        blocks:         'blk'
+        templates:      'tpl'
+    
+    page_order:         'order'
+ 
+    # File extensions
+    extensions:
+        html:           '.html'
+        block:          '.blk'
+        page_block:     '.blks'
+        page_title:     '.title'
+ 
+    # Environment stuff
+    editor:             'vim'
+ 
+# }}}
