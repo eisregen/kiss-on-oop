@@ -1,8 +1,12 @@
 #
 # bunch of wellused utilities
 #
-#   Author: Jakob Holderbaum
+#   Author:     Jakob Holderbaum
+#   Contact:    privat (at) techfolio.de | irc: #linux on xinutec.org
 #
+
+require 'rubygems'
+require 'RedCloth'
 
 module Utils # {{{
 
@@ -12,6 +16,13 @@ module Utils # {{{
     def Utils.validate (name) # {{{
         name =~ /^\w+$/
     end # }}}
+
+    # just a little wrapperfunction around the RedCloth textile onject.
+    # it does not really improve the speed or soething like that, it is just for
+    # the readability
+   def Utils.textile (string) # {{{
+       RedCloth.new(IO.readlines(blkfile).join).to_html
+   end # }}}
 
 end # }}}
 
