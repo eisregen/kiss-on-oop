@@ -17,9 +17,10 @@
 
 $BLOCK_PATH = 'blocks'
 $BLOCK_POSTFIX = 'blk'
+$ROOT_PATH = 'core'
 
 
-require 'bin/utilities'
+require 'core/utilities'
 
 
 class Block # {{{
@@ -28,10 +29,10 @@ class Block # {{{
     def initialize (blockname) # {{{
         # if the blockname with ending, it'll be cutted
         if blockname =~ /.*\.#{$BLOCK_POSTFIX}$/
-            @blockfqn = File.join($BLOCK_PATH,blockname)
+            @blockfqn = File.join($ROOT_PATH,$BLOCK_PATH,blockname)
             blockname = blockname[0..-1*($BLOCK_POSTFIX.length+2)]
         else
-            @blockfqn = File.join($BLOCK_PATH,blockname+'.'+$BLOCK_POSTFIX)
+            @blockfqn = File.join($ROOT_PATH,$BLOCK_PATH,blockname+'.'+$BLOCK_POSTFIX)
         end
         
         if Utils.validate blockname
@@ -44,7 +45,6 @@ class Block # {{{
 
     def dump # {{{
         File.open(@blockfqn,File::WRONLY|File::TRUNC|File::CREAT) do |f|
-          puts 'woot'
           @blocksrc.each {|l| f << l}
         end
 
@@ -85,7 +85,7 @@ end
 def getBlocks # {{{
 
     blocks = []
-    Dir.new($BLOCK_PATH).entries.reverse.select {|d| d =~ /.*\.#{$BLOCK_POSTFIX}$/ }.each {|d| blocks << Block.new(d)}
+    Dir.new File.joi File.joinn($ROOT_PATH,$BLOCK_PATH).entries.reverse.select {|d| d =~ /.*\.#{$BLOCK_POSTFIX}$/ }.each {|d| blocks << Block.new(d)}
     blocks
 
 end # }}}
