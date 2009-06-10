@@ -2,7 +2,7 @@
 # bunch of wellused utilities
 #
 #   Author:     Jakob Holderbaum
-#   Contact:    privat (at) techfolio.de | irc: #linux on xinutec.org
+#   Contact:    privat (at) techfolio.de | irc: #kis on xinutec.org
 #
 
 require 'rubygems'

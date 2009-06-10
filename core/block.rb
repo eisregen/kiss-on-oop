@@ -50,15 +50,22 @@ class Block # {{{
 
     end # }}}
 
+    # if the block was already existent and should only be changed, instead of a
+    # first dump, a load gets the blocksource from the file
     def load # {{{
 
+    end # }}}
+
+    def edit # {{{
     end # }}}
 
     def html # {{{
     end # }}}
 
+    # returns a list of all important information about the derived type of
+    # content-block. This could be useful for a block-type menu
     def information # {{{
-        [@author,@description,@additional]
+        [@author,@title,@description,@additional]
     end # }}}
 
 end # }}}
@@ -67,6 +74,7 @@ end # }}}
 class TextBlock < Block
     def initialize 
         @author = 'Jakob Holderbaum'
+        @title = 'textBlock'
         @description = 'aaaw, nothin special @ all'
         @additional = ''
     end
