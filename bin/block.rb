@@ -2,7 +2,7 @@
 # class Block
 #
 #   Author:     Jakob Holderbaum
-#   Contact:    privat (at) techfolio.de | irc: #linux on xinutec.org
+#   Contact:    privat (at) techfolio.de | irc: #kiss on xinutec.org
 #
 #
 #   'Block' representates a block. Through the different methods it works as an
@@ -57,8 +57,20 @@ class Block # {{{
     def html # {{{
     end # }}}
 
+    def information # {{{
+        [@author,@description,@additional]
+    end # }}}
 
 end # }}}
+
+# temporary testclass for some test
+class TextBlock < Block
+    def initialize 
+        @author = 'Jakob Holderbaum'
+        @description = 'aaaw, nothin special @ all'
+        @additional = ''
+    end
+end
 
 
 # returns a list with instances of all blocks
