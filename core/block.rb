@@ -30,7 +30,9 @@ $ERROR_NOT_EXISTENT = ' don\'t exists'
 require 'core/utilities'
 
 
-class Block # {{{
+# {{{ Block definition
+
+class Block
 
     # the blockname format is not specified. It can be with ending or without
     # In addition, arguments are *NOT* checked against validation. This is a
@@ -70,8 +72,11 @@ class Block # {{{
 
     # this method will be called from the composer of the pages.
     # The different blockmodules *MUST* implement this method.
-    def html # {{{
-    end # }}}
+    #
+    # *N* Not needed
+    #
+    #def html # {{{
+    #end # }}}
 
     # returns a list of all important information about the derived type of
     # content-block. This could be useful for a block-type menu.
@@ -84,7 +89,9 @@ class Block # {{{
     def delete # {{{
     end # }}}
 
-end # }}}
+end
+
+# }}}
 
 # get all blockmodules 
 #  perhaps TODO: forward declaration of class, so this requires can go back in the
@@ -92,9 +99,8 @@ end # }}}
 Dir.new(File.join($ROOT_PATH,$BLOCK_MODULE_PATH)).entries.select {|f| f =~ /.*\.rb$/ }.each {|f| require File.join($ROOT_PATH,$BLOCK_MODULE_PATH,f) }
 
 
-# returns a list with instances of all blocks - this function is not
-# designated for production, just a development helper
-def getBlocks # {{{
+# {{{ Return a list with instances of all blocks (helper only)
+def getBlocks
 
     blocks = []
     Dir.new File.join($ROOT_PATH,$BLOCK_PATH).entries.reverse.select {|d| d =~ /.*\.#{$BLOCK_POSTFIX}$/ }.each {|d| blocks << Block.new(d)}
@@ -102,17 +108,20 @@ def getBlocks # {{{
 
 end # }}}
 
-
-# creates a block
-def mkBlock (blockname,blocktitle,type) # {{{
+# {{{ Create a block
+def mkBlock (blockname,blocktitle,type)
     if not Utils.validate blockname
         puts blockname+$ERROR_ARG_INVALID+'not alpanumeric'
+
     elsif File.exist? File.join($ROOT_PATH,$BLOCK_PATH,blockname+'.'+$BLOCK_POSTFIX)
         puts blockname+$ERROR_EXISTS
+
 #    elsif not File.exist? File.join($ROOT_PATH,$BLOCK_MODULE_PATH,type+'.rb')
 #        puts type+$ERROR_NOT_EXISTENT
+
     elsif not Object.const_defined? type
         puts type+$ERROR_NOT_EXISTENT
+
     else
         block = Kernel.const_get(type).new(blockname,blocktitle)
 
@@ -121,6 +130,7 @@ def mkBlock (blockname,blocktitle,type) # {{{
         else
             blockfile = YAML::load_file $BLOCK_FILE_PATH
         end
+
         puts blockfile
         blockfile += [blockname,[blocktitle,type]]
         File.open($BLOCK_FILE_PATH, 'w') do |out|
@@ -132,6 +142,6 @@ def mkBlock (blockname,blocktitle,type) # {{{
     end
 
 #    config = YAML::load File.open(filepath)
-end # }}}
+end
 
-
+# }}}
