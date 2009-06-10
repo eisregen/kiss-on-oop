@@ -7,7 +7,7 @@
 #   The "Configuration" class Offers an easy way for the configuration of the
 #   KISS-CMS.
 #
-#   TODO: Correctly merge defaults with config-file
+#   TODO: Test set!
 #         (more)
 #
 
@@ -27,8 +27,11 @@ class Configuration
 
         config = YAML::load File.open(filepath)
 
+        # TODO: Merge defaults with user config
         if defaults
-            @conf = defaults.merge!(config)
+            defaults = Configuration.new(defaults, nil)
+
+            @conf = defaults.setConfig(config)
         else
             @conf = config
         end
@@ -45,6 +48,12 @@ class Configuration
 
     end
 
+    # Set values of another config
+    def setConfig (config)
+        @system.set!(config.system)
+        @page.set!(config.page)
+        @html.set!(config.html)
+    end
 
 end
 
@@ -54,27 +63,35 @@ end
 # {{{ System settings
 class CSystem
 
-    attr_accessor :html         # path of html files
-    attr_accessor :pages        # path of page files
-    attr_accessor :blocks       # path of block files
-    attr_accessor :templates    # path of templates
+    attr_accessor :path         # path of the files -> Hash!
+    attr_accessor :extensions   # postfix file extension -> Hash!
 
     attr_accessor :order        # page order
-    attr_accessor :extensions   # postfix file extension
     attr_accessor :editor       # editor
 
     def initialize (hash)
 
         # filepaths
-        @html       = hash["paths"]["html"]
-        @pages      = hash["paths"]["pages"]
-        @blocks     = hash["paths"]["blocks"]
-        @templates  = hash["paths"]["templates"]
+        @path       = hash["paths"] # Hash!
+        @extensions = hash["extensions"] # Hash!
 
         # other
         @order      = hash["page_order"]
-        @extensions = hash["extensions"]
         @editor     = hash["editor"]
+
+    end
+
+
+    # Set values of other CSystem (Warning: Changes current settings)
+    def set! (other)
+
+        # merge hashes
+        @path       = @path.merge(other.html) if other.html
+        @extensions = @extensions.merge(other.extensions.merge) if other.extensions
+
+        # set rest
+        @order      = other.order if other.order
+        @editor     = other.editor if other.editor
 
     end
 
@@ -106,6 +123,22 @@ class CPage
         @separator  = hashOpts["separator"]
 
     end
+
+
+    # Set values of other CPage (Warning: Changes current settings!)
+    def set! (other)
+
+        @title      = other.title if other.title
+        @description = other.description if other.description
+        @author     = other.author if other.author
+        @copyright  = other.copyright if other.copyright
+
+        # Other options
+        @append     = other.append if other.append
+        @separator  = other.separator if other.separator
+
+    end
+
 end
 
 # }}}
@@ -121,9 +154,7 @@ class CHTML
     attr_accessor :dateformat
 
     # CSS stuff
-    attr_accessor :css_nav
-    attr_accessor :css_nav_elem_sel
-    attr_accessor :css_nav_elem_unsel
+    attr_accessor :css  # -> Hash!
 
     def initialize (hash)
 
@@ -135,10 +166,25 @@ class CHTML
         @dateformat = hash["dateformat"]
 
         # CSS stuff
-        @css_nav        = hash["css_nav"]
-        @css_elem_sel   = hash["css_elem_sel"]
-        @css_elem_unsel = hash["css_elem_unsel"]
+        @css        = hash["css"] # Hash
     end
+
+
+    # Set values of other CHTML (Warning: Changes current settings!)
+    def set! (other)
+
+        # Placeholders
+        @title      = other.title if other.title
+        @navigation = other.navigation if other.navigation
+        @author     = other.author if other.author
+        @date       = other.date if other.date
+        @dateformat = other.dateformat if other.dateformat
+
+        # Merge CSS Hash
+        @css        = @css.merge(other.css) if other.css
+
+    end
+
 
 end
 

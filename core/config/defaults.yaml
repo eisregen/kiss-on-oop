@@ -32,9 +32,10 @@ html:
     dateformat:         '%d.%m.%Y - %H:%M' # as given from strftime
  
     # CSS stuff
-    css_nav:            'navigation'
-    css_nav_elem_sel:   'elem_sel'
-    css_nav_elem_unsel: 'elem_unsel'
+    css:
+        nav:            'navigation'
+        nav_elem_sel:   'elem_sel'
+        nav_elem_unsel: 'elem_unsel'
  
 
 system:
