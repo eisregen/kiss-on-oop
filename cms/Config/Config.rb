@@ -7,6 +7,9 @@
 #   The "Configuration" class Offers an easy way for the configuration of the
 #   KISS-CMS.
 #
+#   You shouldn't need direct access to this module since all the settings are
+#   loaded in cms/Config/Settings. See Settings.rb for more informations.
+#
 
 module CMS
     module Config
