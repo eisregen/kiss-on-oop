@@ -1,10 +1,10 @@
 #
-# default Configuration
+# user settings
 #
-#   DO *NOT* CHANGE THIS FILE
+#   Change this file if you want to adjust/add your settings.
 #
-#   If you want to adjust these settings put them in config.yaml in the core
-#   directory of KISS
+#   See cms/Config/defaults.yaml for a list of all possible settings (but
+#   *don't* change that file!).
 #
 
 
@@ -20,43 +20,3 @@ options:
 
     app_title:          true    # append page title to main title?
     separator:          ' > '   # maintitle [separator] subtitle
- 
- 
-html:
-
-    # Placeholders inside the HTML files
-    title:              '{{TITLE}}'
-    navlist:            '{{NAVIGATION}}'
-    author:             '{{AUTHOR}}'
-    date:               '{{DATE}}'
-    dateformat:         '%d.%m.%Y - %H:%M' # as given from strftime
- 
-    # CSS stuff
-    css:
-        nav:            'navigation'
-        nav_elem_sel:   'elem_sel'
-        nav_elem_unsel: 'elem_unsel'
- 
-
-system:
-
-    # File paths
-    paths:
-        root:           'cms'
-        html:           'htdocs'
-
-        blocks:         'BlockFiles'
-        block_modules:  'BlockModules'
-        block_file:     'blocks.yaml'
-    
-    page_order:         'order'
- 
-    # File extensions
-    extensions:
-        html:           'html'
-        block:          'blk'
- 
-    # Environment stuff
-    editor:             'vim'
- 
-# }}}
