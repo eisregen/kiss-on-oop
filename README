@@ -10,10 +10,10 @@ KISS - A simple, lighweight and modular Ruby CMS
     
     The application will be splitted in the following modules (namespaces):
         - CMS
-        - Core
-        - BlockModules
-        - Utils
-        - Userspace
+          - Core
+            - BlockModules
+          - Utils
+          - Userspace
 
     'CMS' is mainly the module around the entire thing. It contains the methods
     which should be accessible from the world out there :)
