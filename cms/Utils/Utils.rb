@@ -19,12 +19,12 @@ module Utils # {{{
         name =~ /^\w+$/
     end # }}}
 
-    # just a little wrapperfunction around the RedCloth textile onject.
-    # it does not really improve the speed or soething like that, it is just for
-    # the readability
-   def Utils.textile (string) # {{{
-       RedCloth.new(IO.readlines(blkfile).join).to_html
-   end # }}}
+    # just a little wrapperfunction around the RedCloth textile onject.  it does
+    # not really improve the speed or something like that, it is just for
+    # readability
+    def Utils.textile (string) # {{{
+        RedCloth.new(IO.readlines(blkfile).join).to_html
+    end # }}}
 
 end # }}}
 end
