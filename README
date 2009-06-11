@@ -1,6 +1,67 @@
 KISS - A simple, lighweight and modular Ruby CMS
 ================================================
 
+    Author:     Nils Schweinsberg, Jakob Holderbaum
+    Contact:    irc: #kiss on xinutec.org
+
+
+
+ DEVELOPING NOTES (WILL GO AT THE END OF THE README)
+    
+    The application will be splitted in three modules (namespaces):
+        - CMS
+        - Core
+        - BlockModules
+        - Utils
+        - Userspace
+
+    'CMS' is mainly the module around the entire thing. It contains the methods
+    which should be accessible from the world out there :)
+
+    Four example the execution proxy. Commands like mkpage, aso should not
+    directly call the desired method. This method is lake a layer between the
+    user and the application. All input validations and kind like that can be
+    done here.
+
+    'Core' contains all the classes and methods which can be used. Every segment
+    of the application (a segment could be the whole Block-related or
+    Page-related stuff) is splitted mainly in two files. For example we show the
+    Block-segment: File no. one is Block.rb. It holds only the Block class
+    itself. The secopnd one is Block_Methods.rb. Here are, like the name says,
+    all methods which are used by or for class Block goes here.
+
+    'BlockModules' is a separate space for the different BlockModules. For now,
+    only a file (eg TextModule.rb) whith the class is allowed. This conventions
+    are in a testing state and will perhaps differ in the first release. README
+    will be updated.
+
+    'Utils' contains all the little helper, that are useful in the application.
+
+    'Userspace' is a very important module. All methods that goes here are
+    accessible from outside and are listed through the help command.
+    Nameing-conventions are mentioned now.
+
+    The user must have granted simple access to the help any given time. For
+    this he can use the argument help for general information. 
+
+    The application will then parse the Core-Space for all Methods and post
+    them. In addition to that, a brief description (just a one line sentence)
+    will be printed. This little sentence must be stored in a variable of the
+    following scheme:
+        $methodname_description
+
+    This gives the user great information about the application. A second
+    feature is the context-sensitive-help. If the user types 'help funktionname'
+    he will get the specific help of this function. This is done through a help
+    function relating to every normal funktion:
+        methodname_help (arguments)
+
+    Every given argument after 'help functionname' will be passed as an Array
+    into this helper-method. Through this mechanism, every developer can do
+    special help chapters or whatever. It's yours, and that was the goal.
+
+
+
  DEPENDENCIES
 
     your system should have installed the following packages:
