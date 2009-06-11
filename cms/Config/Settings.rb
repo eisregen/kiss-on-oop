@@ -1,11 +1,33 @@
+#
+# Settings module
+#
+#   Author:     Nils Schweinsberg
+#   Contact:    mail (at) n-sch.de
+#
+#   This module offers the settings for the KISS-CMS.
+#   Access these settings with
+#
+#       require 'cms/Config/Settings'
+#
+#       $SYSTEM.editor = "vim"
+#       $PAGE.title = "New title"
+#
+#   etc...
+#
+
 module CMS
-module Settings
 
     require 'Config'
 
-    $defaults   = Config::Configuration.new("defaults.yaml")
+    # Load defaults
+    defaults   = Config::Configuration.new("cms/Config/defaults.yaml")
 
-    $neu        = Config::Configuration.new("neu.yaml", $defaults)
+    # Load user config and change default values
+    config    = Config::Configuration.new("config.yaml", defaults)
 
-end
+    # Export settings
+    $SYSTEM = config.system
+    $PAGE   = config.page
+    $HTML   = config.html
+
 end
