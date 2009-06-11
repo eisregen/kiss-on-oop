@@ -10,10 +10,12 @@ module CMS
 
     require 'cms/Userspace/Block'
 
-    block = Core::Block.new('name','da title','atype')
-    block.blocksrc="just a test\n maan"
+#    block = Core::Block.new('name')
+#    block.blocksrc="just a test\n maan"
 #    block.load
-    block.dump
+#    block.dump
+
+#    puts block.blocksrc
 
 #    cfg = Config::Configuration.new 'config.yaml'
 
@@ -26,6 +28,32 @@ module CMS
 #    var = eval('Userspace::'+string.upcase+'_DESCR')
 
 #    puts var
+    #
+
+    if not ARGV[0]
+        puts 'type \''+__FILE__+'\' help for usage information'
+    elsif ARGV[0]=='help'
+        if not ARGV[1]
+            puts 'Possible commands are:'
+            (Userspace.methods false).reject{|m| m=~ /.*\_helper$/}.each do |m|
+                puts m+' - '+eval('Userspace::'+m.upcase+'_DESCR')
+            end
+        elsif Userspace.methods.reject{|m| m=~ /.*\_helper$/}.include? ARGV[1]
+            if not ARGV[2]
+                Userspace.send((ARGV[1]+'_helper').to_sym,nil)
+            else
+                Userspace.send((ARGV[1]+'_helper').to_sym,ARGV[2])
+            end
+        else
+            puts 'help not found'
+        end
+    else
+        if Userspace.methods.reject{|m| m=~ /.*\_helper$/}.include? ARGV[0]
+            puts 'yee'
+        else
+            puts 'command not found'
+        end
+    end
 
 
 end

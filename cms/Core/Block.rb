@@ -19,10 +19,9 @@ module CMS
 module Core
 
     require File.join('cms','Config','Settings')
-#    $CFG = Config::Config::ration.new 'config.yaml',nil
 
     $MODULE_PATH = 'Core'
-    $BLOCK_FILE_PATH = File.join(Config::system.path['root'],$MODULE_PATH,Config::system.path['blocks'],Config::system.path['block_file'])
+    $BLOCK_FILE_PATH = File.join(Config::SYSTEM.path['root'],$MODULE_PATH,Config::SYSTEM.path['blocks'],Config::SYSTEM.path['block_file'])
 
 
     $ERROR_ARG_NOT_GIVEN = ' must be given'
@@ -31,38 +30,40 @@ module Core
     $ERROR_NOT_EXISTENT = ' don\'t exists'
 
 
-    require File.join(Config::system.path['root'],'Utils','Utils')
+    require File.join(Config::SYSTEM.path['root'],'Utils','Utils')
+
+    $BLOCK_MODULE_PATH = File.join(Config::SYSTEM.path['root'],$MODULE_PATH,Config::SYSTEM.path['block_modules'])
+    
+#    Dir.open($BLOCK_MODULE_PATH).select { |d| d =~ /.*\.rb$/ }.each do |f|
+#        require File.join($BLOCK_MODULE_PATH,f) 
+#    end
+
 
 
     # {{{ Block definition
-
     class Block
 
         attr_accessor :blocksrc
+        attr_accessor :blocktitle
+        attr_accessor :blockname
+        attr_accessor :blocktype
 
         # the blockname format is not specified. It can be with ending or without
         #   it throws an ArgumentError whith a message whats went wrong
-        def initialize (blockname,blocktitle,type) # {{{
+        def initialize (blockname) # {{{
             
-            if not Utils.valid? blockname
-                raise ArgumentError,blockname+$ERROR_ARG_INVALID+'not alpanumeric'
-#            elsif not Object.const_defined? type
-#                raise ArgumentError,type+$ERROR_NOT_EXISTENT
+            # if the blockname is with ending, it'll be cutted
+            @blockfqn = File.join(Config::SYSTEM.path['root'],$MODULE_PATH,Config::SYSTEM.path['blocks'])
+            if blockname =~ /.*\.#{Config::SYSTEM.extensions['block']}$/
+                @blockfqn = File.join(@blockfqn,blockname)
+                blockname = blockname[0..-1*(Config::SYSTEM.extensions['block'].length+2)]
             else
-
-                # if the blockname is with ending, it'll be cutted
-                @blockfqn = File.join(Config::system.path['root'],$MODULE_PATH,Config::system.path['blocks'])
-                if blockname =~ /.*\.#{Config::system.extensions['block']}$/
-                    @blockfqn = File.join(@blockfqn,blockname)
-                    blockname = blockname[0..-1*(Config::system.extensions['block'].length+2)]
-                else
-                    @blockfqn = File.join(@blockfqn,blockname+'.'+Config::system.extensions['block'])
-                end
-        
-                @blockname = blockname
-                @blocktitle = blocktitle
-                @type = type            # TODO: perhaps, this metainformation is given by the ruby interpreter
+                @blockfqn = File.join(@blockfqn,blockname+'.'+Config::SYSTEM.extensions['block'])
             end
+        
+            @blockname = blockname
+            @blocktitle = blocktitle
+            @blocktype = type            # TODO: perhaps, this metainformation is given by the ruby interpreter
 
         end # }}}
 
