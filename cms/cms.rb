@@ -10,22 +10,22 @@ module CMS
 
     require 'cms/Userspace/Block'
 
-#    block = Core::Block.new('name','da title','atype')
-#    block.blocksrc="just a test\n maan"
+    block = Core::Block.new('name','da title','atype')
+    block.blocksrc="just a test\n maan"
 #    block.load
-#    block.dump
+    block.dump
 
-    cfg = Config::Configuration.new 'config.yaml'
+#    cfg = Config::Configuration.new 'config.yaml'
 
-    puts cfg.system.path['html']
+#    puts cfg.system.path['html']
 
-    puts Userspace::MKBLOCK_DESCR
+#    puts Userspace::MKBLOCK_DESCR
    
-    string = 'mkblock'
+#    string = 'mkblock'
 
-    var = eval('Userspace::'+string.upcase+'_DESCR')
+#    var = eval('Userspace::'+string.upcase+'_DESCR')
 
-    puts var
+#    puts var
 
 
 end

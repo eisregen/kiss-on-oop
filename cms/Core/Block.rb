@@ -18,11 +18,11 @@ module CMS
 
 module Core
 
-    require File.join('cms','Config','Config')
-    $CFG = Config::Configuration.new 'config.yaml',nil
+    require File.join('cms','Config','Settings')
+#    $CFG = Config::Configuration.new 'config.yaml',nil
 
     $MODULE_PATH = 'Core'
-    $BLOCK_FILE_PATH = File.join($CFG.system.path['root'],$MODULE_PATH,$CFG.system.path['blocks'],$CFG.system.path['block_file'])
+    $BLOCK_FILE_PATH = File.join($CONFIG::system.path['root'],$MODULE_PATH,$CONFIG::system.path['blocks'],$CONFIG::system.path['block_file'])
 
 
     $ERROR_ARG_NOT_GIVEN = ' must be given'
@@ -31,7 +31,7 @@ module Core
     $ERROR_NOT_EXISTENT = ' don\'t exists'
 
 
-    require File.join($CFG.system.path['root'],'Utils','Utils')
+    require File.join($CONFIG::system.path['root'],'Utils','Utils')
 
 
     # {{{ Block definition
@@ -51,12 +51,12 @@ module Core
             else
 
                 # if the blockname is with ending, it'll be cutted
-                @blockfqn = File.join($CFG.system.path['root'],$MODULE_PATH,$CFG.system.path['blocks'])
-                if blockname =~ /.*\.#{$CFG.system.extensions['block']}$/
+                @blockfqn = File.join($CONFIG::system.path['root'],$MODULE_PATH,$CONFIG::system.path['blocks'])
+                if blockname =~ /.*\.#{$CONFIG::system.extensions['block']}$/
                     @blockfqn = File.join(@blockfqn,blockname)
-                    blockname = blockname[0..-1*($CFG.system.extensions['block'].length+2)]
+                    blockname = blockname[0..-1*($CONFIG::system.extensions['block'].length+2)]
                 else
-                    @blockfqn = File.join(@blockfqn,blockname+'.'+$CFG.system.extensions['block'])
+                    @blockfqn = File.join(@blockfqn,blockname+'.'+$CONFIG::system.extensions['block'])
                 end
         
                 @blockname = blockname
