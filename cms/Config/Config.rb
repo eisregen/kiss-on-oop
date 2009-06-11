@@ -1,3 +1,4 @@
+module CMS
 #
 # class Configuration
 #
@@ -10,6 +11,10 @@
 #   TODO: Test set!
 #         (more)
 #
+
+module Config
+
+# omg, how can I autoindent over 9000 lines of code in vim?  :)
 
 require 'yaml'
 
@@ -192,5 +197,7 @@ class CHTML
 
 end
 
-# }}}
+end
 
+# }}}
+end
