@@ -42,19 +42,19 @@ system:
 
     # File paths
     paths:
-        root:           'cms'
-        html:           'htdocs'
-
-        blocks:         'BlockFiles'
-        block_modules:  'BlockModules'
-        block_file:     'blocks.yaml'
+        html:           'web'
+        pages:          'pgs'
+        blocks:         'blk'
+        templates:      'tpl'
     
     page_order:         'order'
  
     # File extensions
     extensions:
-        html:           'html'
-        block:          'blk'
+        html:           '.html'
+        block:          '.blk'
+        page_block:     '.blks'
+        page_title:     '.title'
  
     # Environment stuff
     editor:             'vim'
