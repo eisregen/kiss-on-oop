@@ -6,6 +6,7 @@ module CMS
 #   Contact:    privat (at) techfolio.de | irc: #kis on xinutec.org
 #
 
+
 require 'rubygems'
 require 'RedCloth'
 

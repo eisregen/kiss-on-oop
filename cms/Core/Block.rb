@@ -14,6 +14,7 @@ module CMS
 #
 #   TODO:   all configuration parameters are listed below. they need to be
 #           substituted through the config class
+#
 
 module Core
 
