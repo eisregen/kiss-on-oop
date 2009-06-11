@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# little helper, clones the default config in root
+
+cp cms/Config/defaults.yaml config.yaml
+

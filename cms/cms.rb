@@ -6,11 +6,17 @@ module CMS
 
     require 'cms/Utils/Utils'
     require 'cms/Core/Block'
+    require 'cms/Config/Config'
 
 
-    block = Core::Block.new('name2','title','type')
+    block = Core::Block.new('name','da title','atype')
     block.blocksrc="just a test\n maan"
 #    block.load
     block.dump
+
+    cfg = Config::Configuration.new 'config.yaml',nil
+
+    puts cfg.system.path['html']
+
 
 end
