@@ -15,7 +15,7 @@ module CMS
 #    block.load
 #    block.dump
 
-    cfg = Config::Configuration.new 'config.yaml',nil
+    cfg = Config::Configuration.new 'config.yaml'
 
     puts cfg.system.path['html']
 
