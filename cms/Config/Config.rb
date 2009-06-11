@@ -14,8 +14,6 @@ module CMS
 
 module Config
 
-# omg, how can I autoindent over 9000 lines of code in vim?  :)
-
 require 'yaml'
 
 
@@ -28,6 +26,8 @@ class Configuration
     attr_accessor :opts
     attr_accessor :html
 
+    # filepath -> String
+    # defaults -> Configuration
     def initialize (filepath, defaults = nil)
 
         if not filepath
@@ -35,18 +35,13 @@ class Configuration
             return
         end
 
-
         # Load filepath
         @conf = YAML::load File.open(filepath)
 
-        # Set system values
-        @system = CSystem.new(@conf["system"]) if @conf["system"]
-
-        # Page values
+        # Set values
+        @system = CSystem.new(@conf["system"])               if @conf["system"]
         @page   = CPage.new(@conf["page"], @conf["options"]) if @conf["page"]
-
-        # HTML values
-        @html   = CHTML.new(@conf["html"]) if @conf["html"]
+        @html   = CHTML.new(@conf["html"])                   if @conf["html"]
 
 
         # Merge defaults with user config
@@ -59,9 +54,21 @@ class Configuration
     # TODO
     # Set values of another config
     def setConfig! (other)
-        @system.set!(other.system)
-        @page.set!(other.page)
-        @html.set!(other.html)
+        if @system
+            @system.set!(other.system)  if other.system
+        else
+            @system = other.system
+        end
+        if @page
+            @page.set!(other.page)      if other.page
+        else
+            @page = other.page
+        end
+        if @html
+            @html.set!(other.html)      if other.html
+        else
+            @html = other.html
+        end
     end
 
 end

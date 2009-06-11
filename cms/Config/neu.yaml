@@ -1,0 +1,12 @@
+page:
+
+    title:              'Foooobar!'
+    description:        'Noch in Arbeit...'
+    author:             'Nils Schweinsberg'
+    copyright:          'Nils Schweinsberg'
+ 
+
+options:
+
+    app_title:          true
+    separator:          ' - '
