@@ -1,34 +1,25 @@
 #!/usr/bin/ruby
 
+#
+# The 'shell'
+#   
+#   This file is the interface for the user. As mentioned in the README, the
+#   arguments are passed into the Userspace with slighly modifications and verifications.
+#
+#   If the first argument equals a mathod in Userspace, this method is called
+#   with all the following arguments as an argument array.
+#
+#   If the first equals 'help' a list of all Userspace-methods whith the ouptput
+#   of there corresponding description-methods will be shown.
+#
+#   The help argument can be followed by a method name. In this case, the
+#   helper-method of the given method is calles with all following
+#   commandlinearguments in one given array.
+#
+
 module CMS
 
-    # for now, this is only a playground for the developers :)
-
-    require 'cms/Utils/Utils'
-    require 'cms/Core/Block'
-    require 'cms/Config/Config'
-
     require 'cms/Userspace/Block'
-
-#    block = Core::Block.new('name')
-#    block.blocksrc="just a test\n maan"
-#    block.load
-#    block.dump
-
-#    puts block.blocksrc
-
-#    cfg = Config::Configuration.new 'config.yaml'
-
-#    puts cfg.system.path['html']
-
-#    puts Userspace::MKBLOCK_DESCR
-   
-#    string = 'mkblock'
-
-#    var = eval('Userspace::'+string.upcase+'_DESCR')
-
-#    puts var
-    #
 
     if not ARGV[0]
         puts 'type \''+__FILE__+'\' help for usage information'
