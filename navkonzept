@@ -1,0 +1,82 @@
+class Page
+
+"Fasst das gesamte Layout einer Seite zusammen und ist für das erstellen des
+HTML-Codes (mit Hilfe der Template Klasse) zuständig"
+
+    Felder:
+    - name (String) - einfacher String
+    - parent (String) - "Eltern"-Seite (z.B. "Index"), nil wenn es keine Unterseite ist
+    - blocks ([Block]) - sämtliche Blocks der Seite
+    - template (Filepath) - Das Template, mit dem die HTML-Seite erstellt werden soll
+      (einfacher Dateipfad)
+
+    Methoden:
+    - addBlock(Block)
+    - removeBlock(String) - Name des Blocks
+
+    - createHTML(Template) -> HTML-Code
+    - private createBlock(Block, Template) -> HTML-Code des gegebenen Blocks
+    - private createNavigation(Template) -> HTML-Code der Hierarchie
+    - Mehr? :)
+
+
+
+class Navigation
+
+"Speichert und läd Struktur der Seite als YAML-Datei und liefert [..]
+
+Beispiel-Layout einer solchen navigation.yaml:
+
+-------------------------------------------------------------------------------
+top:
+    - Home
+    - About
+    - Projects
+    - Contact
+
+projects:
+    - KISS
+    - Other
+-------------------------------------------------------------------------------
+
+Das könnte dann so aussehen (abhängig von dem verwendeten Template natürlich)...
+
+--------------------------------------------------------------------------------
+Home
+About
+Projects
+ - KISS
+ - Other
+Projects
+Contact
+--------------------------------------------------------------------------------
+
+...oder so (geladene Seite: "kiss", in diesem Fall wäre der erste Eintrag unter
+"top" die Startseite):
+
+--------------------------------------------------------------------------------
+'Index >> Projects >> KISS'
+--------------------------------------------------------------------------------
+
+etc pp... :)"
+
+    Felder:
+    - parent (String = nil) - Name der Elternseite
+
+    Methoden:
+    - getChildren(String) - alle Seiten mit @name als parent
+
+    - saveToYaml(Filepath)
+    - loadFromYaml(Filepath)
+
+    - Mehr? Ideen? ;)
+
+
+
+Template
+
+    Felder:
+    - ??
+
+    Methoden:
+    - 
