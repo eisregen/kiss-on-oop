@@ -18,7 +18,7 @@
 module CMS
     module Config
 
-        require 'Config'
+        require 'cms/Config/Config'
 
         # Load defaults
         defaults   = Config::Configuration.new("cms/Config/defaults.yaml")
