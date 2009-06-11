@@ -18,14 +18,12 @@ module CMS
 
 module Core
 
-    $ROOT_PATH = 'cms'
-    $MODULE_PATH = 'Core'
+    require File.join('cms','Config','Config')
+    $CFG = Config::Configuration.new 'config.yaml',nil
 
-    $BLOCK_PATH = 'BlockFiles'
-    $BLOCK_MODULE_PATH = 'BlockModules'
-    $BLOCK_POSTFIX = 'blk'
-    $BLOCK_FILE = 'blocks.yaml'
-    $BLOCK_FILE_PATH = File.join($ROOT_PATH,$MODULE_PATH,$BLOCK_PATH,$BLOCK_FILE)
+    $MODULE_PATH = 'Core'
+    $BLOCK_FILE_PATH = File.join($CFG.system.path['root'],$MODULE_PATH,$CFG.system.path['blocks'],$CFG.system.path['block_file'])
+
 
     $ERROR_ARG_NOT_GIVEN = ' must be given'
     $ERROR_ARG_INVALID = ' produced the foollowing error: '
@@ -33,7 +31,7 @@ module Core
     $ERROR_NOT_EXISTENT = ' don\'t exists'
 
 
-    require File.join($ROOT_PATH,'Utils','Utils')
+    require File.join($CFG.system.path['root'],'Utils','Utils')
 
 
     # {{{ Block definition
@@ -53,11 +51,12 @@ module Core
             else
 
                 # if the blockname is with ending, it'll be cutted
-                if blockname =~ /.*\.#{$BLOCK_POSTFIX}$/
-                    @blockfqn = File.join($ROOT_PATH,$MODULE_PATH,$BLOCK_PATH,blockname)
-                    blockname = blockname[0..-1*($BLOCK_POSTFIX.length+2)]
+                @blockfqn = File.join($CFG.system.path['root'],$MODULE_PATH,$CFG.system.path['blocks'])
+                if blockname =~ /.*\.#{$CFG.system.extensions['block']}$/
+                    @blockfqn = File.join(@blockfqn,blockname)
+                    blockname = blockname[0..-1*($CFG.system.extensions['block'].length+2)]
                 else
-                    @blockfqn = File.join($ROOT_PATH,$MODULE_PATH,$BLOCK_PATH,blockname+'.'+$BLOCK_POSTFIX)
+                    @blockfqn = File.join(@blockfqn,blockname+'.'+$CFG.system.extensions['block'])
                 end
         
                 @blockname = blockname
@@ -84,7 +83,7 @@ module Core
                 blockfile = YAML::load_file $BLOCK_FILE_PATH
             end
 
-            # adds the metainformation to the yaml-file
+            # adds the metainformation to the yaml-file TODO: file modifier oO
             blockfile += [@blockname,[@blocktitle,@type]]
             File.open($BLOCK_FILE_PATH, 'w') do |out|
                 YAML.dump(blockfile, out )
