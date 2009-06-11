@@ -44,7 +44,7 @@ system:
     paths:
         root:           'cms'
         html:           'htdocs'
-
+        module:         'Core'
         blocks:         'BlockFiles'
         block_modules:  'BlockModules'
         block_file:     'blocks.yaml'
