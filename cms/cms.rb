@@ -35,8 +35,9 @@ module CMS
     elsif ARGV[0]=='help'
         if not ARGV[1]
             puts 'Possible commands are:'
-            (Userspace.methods false).reject{|m| m=~ /.*\_helper$/}.each do |m|
-                puts m+' - '+eval('Userspace::'+m.upcase+'_DESCR')
+            (Userspace.methods false).reject{|m| m=~ /.*\_helper$/}.reject{|m| m=~ /.*\_description$/}.each do |m|
+                print '\''+m+'\' '
+                Userspace.send((m+'_description').to_sym)
             end
         elsif Userspace.methods.reject{|m| m=~ /.*\_helper$/}.include? ARGV[1]
             if not ARGV[2]
@@ -49,7 +50,11 @@ module CMS
         end
     else
         if Userspace.methods.reject{|m| m=~ /.*\_helper$/}.include? ARGV[0]
-            puts 'yee'
+            if not ARGV[1]
+                Userspace.send(ARGV[0],nil)
+            else
+                Userspace.send(ARGV[0],ARGV[1..-1])
+            end
         else
             puts 'command not found'
         end

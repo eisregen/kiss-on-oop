@@ -52,15 +52,15 @@ KISS - A simple, lighweight and modular Ruby CMS
 
     The application will then parse the Core-Space for all Methods and post
     them. In addition to that, a brief description (just a one line sentence)
-    will be printed. This little sentence must be stored in a variable of the
+    will be printed. This little sentence must be stored in a method of the
     following scheme:
-        $methodname_description
+        methodname_description
 
     This gives the user great information about the application. A second
     feature is the context-sensitive-help. If the user types 'help funktionname'
     he will get the specific help of this function. This is done through a help
     function relating to every normal funktion:
-        methodname_help (arguments)
+        methodname_help (argumentarray)
 
     Every given argument after 'help functionname' will be passed as an Array
     into this helper-method. Through this mechanism, every developer can do
