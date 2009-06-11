@@ -31,7 +31,7 @@ module CMS
             def initialize (filepath, defaults = nil)
 
                 if not filepath
-                    puts "No filepath given"
+                    puts 'No filepath given'
                     return
                 end
 
@@ -39,9 +39,9 @@ module CMS
                 @conf = YAML::load File.open(filepath)
 
                 # Set values
-                @system = CSystem.new(@conf["system"])               if @conf["system"]
-                @page   = CPage.new(@conf["page"], @conf["options"]) if @conf["page"]
-                @html   = CHTML.new(@conf["html"])                   if @conf["html"]
+                @system = CSystem.new(@conf['system'])               if @conf['system']
+                @page   = CPage.new(@conf['page'], @conf['options']) if @conf['page']
+                @html   = CHTML.new(@conf['html'])                   if @conf['html']
 
 
                 # Merge defaults with user config
@@ -90,12 +90,12 @@ module CMS
             def initialize (hash)
 
                 # filepaths
-                @path       = hash["paths"] if hash["paths"] # Hash!
-                @extensions = hash["extensions"] if hash["extensions"] # Hash!
+                @path       = hash['paths'] if hash['paths'] # Hash!
+                @extensions = hash['extensions'] if hash['extensions'] # Hash!
 
                 # other
-                @order      = hash["page_order"] if hash["page_order"]
-                @editor     = hash["editor"] if hash["editor"]
+                @order      = hash['page_order'] if hash['page_order']
+                @editor     = hash['editor'] if hash['editor']
 
             end
 
@@ -140,14 +140,14 @@ module CMS
             def initialize (hashPage, hashOpts)
 
                 # Asign values
-                @title      = hashPage["title"] if hashPage["title"]
-                @description = hashPage["description"] if hashPage["description"]
-                @author     = hashPage["author"] if hashPage["author"]
-                @copyright  = hashPage["copyright"] if hashPage["copyright"]
+                @title      = hashPage['title'] if hashPage['title']
+                @description = hashPage['description'] if hashPage['description']
+                @author     = hashPage['author'] if hashPage['author']
+                @copyright  = hashPage['copyright'] if hashPage['copyright']
 
                 # Other options
-                @append     = hashOpts["app_title"] if hashOpts["app_title"]
-                @separator  = hashOpts["separator"] if hashOpts["separator"]
+                @append     = hashOpts['app_title'] if hashOpts['app_title']
+                @separator  = hashOpts['separator'] if hashOpts['separator']
 
             end
 
@@ -186,14 +186,14 @@ module CMS
             def initialize (hash)
 
                 # Placeholders
-                @title      = hash["title"] if hash["title"]
-                @navigation = hash["navigation"] if hash["navigation"]
-                @author     = hash["author"] if hash["author"]
-                @date       = hash["date"] if hash["date"]
-                @dateformat = hash["dateformat"] if hash["dateformat"]
+                @title      = hash['title'] if hash['title']
+                @navigation = hash['navigation'] if hash['navigation']
+                @author     = hash['author'] if hash['author']
+                @date       = hash['date'] if hash['date']
+                @dateformat = hash['dateformat'] if hash['dateformat']
 
                 # CSS stuff
-                @css        = hash["css"] if hash["css"] # Hash
+                @css        = hash['css'] if hash['css'] # Hash
             end
 
 

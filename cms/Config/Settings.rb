@@ -18,13 +18,13 @@
 module CMS
     module Config
 
-        require 'cms/Config/Config'
+        require File.join ('cms','Config','Config')
 
         # Load defaults
-        defaults   = Config::Configuration.new("cms/Config/defaults.yaml")
+        defaults   = Config::Configuration.new(File.join('cms','Config','defaults.yaml'))
 
         # Load user config and change default values
-        config    = Config::Configuration.new("config.yaml", defaults)
+        config    = Config::Configuration.new('config.yaml', defaults)
 
         # Export settings
         SYSTEM = config.system
