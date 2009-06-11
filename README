@@ -8,7 +8,7 @@ KISS - A simple, lighweight and modular Ruby CMS
 
  DEVELOPING NOTES (WILL GO AT THE END OF THE README)
     
-    The application will be splitted in three modules (namespaces):
+    The application will be splitted in the following modules (namespaces):
         - CMS
         - Core
         - BlockModules
