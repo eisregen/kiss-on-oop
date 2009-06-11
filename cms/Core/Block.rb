@@ -20,22 +20,21 @@ module Core
 
     require File.join('cms','Config','Settings')
 
-    $MODULE_PATH = 'Core'
-    $BLOCK_FILE_PATH = File.join(Config::SYSTEM.path['root'],$MODULE_PATH,Config::SYSTEM.path['blocks'],Config::SYSTEM.path['block_file'])
+    BLOCK_FILE_PATH = File.join(Config::SYSTEM.path['root'],Config::SYSTEM.path['module'],Config::SYSTEM.path['blocks'],Config::SYSTEM.path['block_file'])
 
 
-    $ERROR_ARG_NOT_GIVEN = ' must be given'
-    $ERROR_ARG_INVALID = ' produced the foollowing error: '
-    $ERROR_EXISTS = ' allready exists'
-    $ERROR_NOT_EXISTENT = ' don\'t exists'
+    ERROR_ARG_NOT_GIVEN = ' must be given'
+    ERROR_ARG_INVALID = ' produced the foollowing error: '
+    ERROR_EXISTS = ' allready exists'
+    ERROR_NOT_EXISTENT = ' don\'t exists'
 
 
     require File.join(Config::SYSTEM.path['root'],'Utils','Utils')
 
-    $BLOCK_MODULE_PATH = File.join(Config::SYSTEM.path['root'],$MODULE_PATH,Config::SYSTEM.path['block_modules'])
+    BLOCK_MODULE_PATH = File.join(Config::SYSTEM.path['root'],Config::SYSTEM.path['module'],Config::SYSTEM.path['block_modules'])
     
-#    Dir.open($BLOCK_MODULE_PATH).select { |d| d =~ /.*\.rb$/ }.each do |f|
-#        require File.join($BLOCK_MODULE_PATH,f) 
+#    Dir.open(BLOCK_MODULE_PATH).select { |d| d =~ /.*\.rb$/ }.each do |f|
+#        require File.join(BLOCK_MODULE_PATH,f) 
 #    end
 
 
@@ -53,7 +52,7 @@ module Core
         def initialize (blockname) # {{{
             
             # if the blockname is with ending, it'll be cutted
-            @blockfqn = File.join(Config::SYSTEM.path['root'],$MODULE_PATH,Config::SYSTEM.path['blocks'])
+            @blockfqn = File.join(Config::SYSTEM.path['root'],Config::SYSTEM.path['module'],Config::SYSTEM.path['blocks'])
             if blockname =~ /.*\.#{Config::SYSTEM.extensions['block']}$/
                 @blockfqn = File.join(@blockfqn,blockname)
                 blockname = blockname[0..-1*(Config::SYSTEM.extensions['block'].length+2)]
@@ -76,17 +75,17 @@ module Core
                 FileUtils.touch @blockfqn
             end
 
-            if not File.exist? $BLOCK_FILE_PATH
+            if not File.exist? BLOCK_FILE_PATH
                 # if the yaml file doesnt exist, create an empty list,
                 blockfile = []
             else
                 # otherwise load the file
-                blockfile = YAML::load_file $BLOCK_FILE_PATH
+                blockfile = YAML::load_file BLOCK_FILE_PATH
             end
 
             # adds the metainformation to the yaml-file TODO: file modifier oO
             blockfile += [@blockname,[@blocktitle,@type]]
-            File.open($BLOCK_FILE_PATH, 'w') do |out|
+            File.open(BLOCK_FILE_PATH, 'w') do |out|
                 YAML.dump(blockfile, out )
             end
 
@@ -101,7 +100,7 @@ module Core
             end
 
             # get metainformation
-            blockfile = YAML::load_file $BLOCK_FILE_PATH
+            blockfile = YAML::load_file BLOCK_FILE_PATH
             if index=blockfile.index(@blockname)
                 @blocktitle = blockfile[index+1][0]
                 @blocktype = blockfile[index+1][1]

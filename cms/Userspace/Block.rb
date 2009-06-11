@@ -19,7 +19,7 @@ module CMS
 module Userspace
 
     require File.join('cms','Config','Settings')
-    $MODULE_PATH = 'Userspace'
+    MODULE_PATH = 'Userspace'
 
     def Userspace.mkblock (args)
         if args.length < 3
@@ -33,9 +33,11 @@ module Userspace
             puts 'type\'s ok'
         end
     end
+
     def Userspace.mkblock_description
         puts 'is used for creation of blocks'
     end
+
     def Userspace.mkblock_helper (arg)
        if not arg
            puts 'mkblock can be used to create an new content block'
