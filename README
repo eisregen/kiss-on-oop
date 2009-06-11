@@ -12,6 +12,8 @@ KISS - A simple, lighweight and modular Ruby CMS
         - CMS
           - Core
             - BlockModules
+          - Config
+          - Template
           - Utils
           - Userspace
 
@@ -29,6 +31,11 @@ KISS - A simple, lighweight and modular Ruby CMS
     Block-segment: File no. one is Block.rb. It holds only the Block class
     itself. The secopnd one is Block_Methods.rb. Here are, like the name says,
     all methods which are used by or for class Block goes here.
+
+    'Config' will contain the config-class. This separation gives the class and
+    its additional files a clean space without filenamecollisions, a.s.o.
+
+    'Template' holds the template-class. Information will follow [TODO]
 
     'BlockModules' is a separate space for the different BlockModules. For now,
     only a file (eg TextModule.rb) whith the class is allowed. This conventions
