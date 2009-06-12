@@ -61,8 +61,6 @@ module Core
             end
         
             @blockname = blockname
-            @blocktitle = blocktitle
-            @blocktype = type            # TODO: perhaps, this metainformation is given by the ruby interpreter
 
         end # }}}
 
@@ -84,7 +82,11 @@ module Core
             end
 
             # adds the metainformation to the yaml-file TODO: file modifier oO
-            blockfile += [@blockname,[@blocktitle,@type]]
+            if blockfile.include? @blockname
+                i = blockfile.index @blockname
+            end
+                blockfile += [@blockname,[@blocktitle,@blocktype]]
+           
             File.open(BLOCK_FILE_PATH, 'w') do |out|
                 YAML.dump(blockfile, out )
             end
@@ -125,6 +127,15 @@ module Core
         # removes all the crap.. THE BLOCK WILL BE ERASED! :P
         # TODO: implement it..
         def delete # {{{
+            File.delete @blockfqn
+
+            blockfile = YAML::load_file BLOCK_FILE_PATH
+            blockfile -= [@blockname,[@blocktitle,@blocktype]]
+
+            File.open(BLOCK_FILE_PATH, 'w') do |out|
+                YAML.dump(blockfile, out )
+            end
+
         end # }}}
 
     end # }}}

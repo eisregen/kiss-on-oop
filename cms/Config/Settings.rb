@@ -18,7 +18,7 @@
 module CMS
     module Config
 
-        require File.join ('cms','Config','Config')
+        require File.join('cms','Config','Config')
 
         # Load defaults
         defaults   = Config::Configuration.new(File.join('cms','Config','defaults.yaml'))

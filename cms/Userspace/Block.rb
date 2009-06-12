@@ -20,33 +20,192 @@ module Userspace
 
     require File.join('cms','Config','Settings')
     MODULE_PATH = 'Userspace'
-
+    require File.join(Config::SYSTEM.path['root'],'Utils','Utils')
+    require File.join(Config::SYSTEM.path['root'],'Core','Block')
+   
+    # {{{ mkblock
     def Userspace.mkblock (args)
-        if args.length < 3
+        if !args || args.size < 3
             puts 'not enough arguments'
             return
         end
         blockname = args[0]
         blocktitle = args[1]
         blocktype = args[2]
-        if File.exist? File.join(Config::SYSTEM.path['root'],'Core',Config::SYSTEM.path['block_modules'],blocktype+'.rb') 
-            puts 'type\'s ok'
-        end
-    end
 
+        if not Utils.valid? blockname
+            puts 'invalid blockname'
+        elsif File.exist? fqn = File.join(Config::SYSTEM.path['root'],'Core',Config::SYSTEM.path['blocks'],blockname+'.'+Config::SYSTEM.extensions['block'])
+            puts 'block already exists'
+        elsif not File.exist? File.join(Config::SYSTEM.path['root'],'Core',Config::SYSTEM.path['block_modules'],blocktype+'.rb')
+            puts 'unknown Blocktype'
+        else
+            require File.join(Config::SYSTEM.path['root'],'Core',Config::SYSTEM.path['block_modules'],blocktype)
+
+            block = BlockModules.const_get(blocktype).new blockname 
+            block.blocktitle = blocktitle
+            block.blocktype = blocktype
+            
+            block.dump
+
+            system Config::SYSTEM.editor+' '+fqn
+
+        end
+    end # }}}
+    # {{{ mkblock description
     def Userspace.mkblock_description
         puts 'is used for creation of blocks'
-    end
-
+    end # }}}
+    # {{{ mkblock helper
     def Userspace.mkblock_helper (arg)
        if not arg
-           puts 'mkblock can be used to create an new content block'
+           puts 'mkblock can be used to create a new content block'
            puts 'The following arguments should be given:'
            puts '  [blockname],[blocktitle],[blocktype]'
        else
            puts 'help accepts no additional arguments'
        end
-    end
+    end # }}}
+
+    
+    # {{{ rmblock
+    def Userspace.rmblock args
+        if !args || args.size < 1
+            puts 'not enough arguments'
+            return
+        end
+        blockname = args[0]
+
+    if not Utils.valid? blockname
+        puts 'invalid blockname'
+        elsif not File.exist? fqn = File.join(Config::SYSTEM.path['root'],'Core',Config::SYSTEM.path['blocks'],blockname+'.'+Config::SYSTEM.extensions['block'])
+            puts 'block doesn\'t exist'
+        else
+           block = Core::Block.new blockname
+           block.load
+           block.delete
+        end
+    end # }}}
+    # {{{ rmblock description
+    def Userspace.rmblock_description
+        puts 'is used for deletion of blocks'
+    end # }}}
+    # {{{ rmblock helper
+    def Userspace.rmblock_helper (arg)
+        if not arg
+           puts 'rmblock can be used to delete a given block'
+           puts 'The following argument should be given:'
+           puts '  [blockname]'
+       else
+           puts 'help accepts no additional arguments'
+       end
+    end # }}}
+
+
+    # {{{ rmblock
+    def Userspace.lsblock args
+        if !args || args.size < 1
+            Dir.open(File.join(Config::SYSTEM.path['root'],'Core',Config::SYSTEM.path['blocks'])).select { |d| d =~ /.*\.#{Config::SYSTEM.extensions['block']}$/ }.each do |b|
+                puts b[0..-1*(Config::SYSTEM.extensions['block'].length+2)]
+            end
+            return
+        end
+        blockname = args[0]
+
+        if not Utils.valid? blockname
+            puts 'invalid blockname'
+        elsif not File.exist? File.join(Config::SYSTEM.path['root'],'Core',Config::SYSTEM.path['blocks'],blockname+'.'+Config::SYSTEM.extensions['block'])
+            puts 'block doesn\'t exist'
+        else
+           block = Core::Block.new blockname
+           block.load
+           puts 'blockname:   '+block.blockname
+           puts 'blocktitle:  '+block.blocktitle
+           puts 'blocktype:   '+block.blocktype
+        end
+    end # }}}
+    # {{{ lsblock description
+    def Userspace.lsblock_description
+        puts 'is used for listing of blocks'
+    end # }}}
+    # {{{ lsblock helper
+    def Userspace.lsblock_helper (arg)
+        if not arg
+           puts 'lsblock can be used to show all blocks.'
+           puts 'Besides it can be used to view the details of a block.'
+           puts 'For that, the following argument should be given:'
+           puts '  [blockname]'
+       else
+           puts 'help accepts no additional arguments'
+       end
+    end # }}}
+
+
+    # {{{ chblock
+    def Userspace.chblock args
+        if !args || args.length < 2
+            puts 'not enough arguments'
+            return
+        end
+
+        if not Utils.valid? args[0]
+            puts 'invalid blockname'
+            return
+        end
+
+        blockname = args[0]
+        action = args[1]
+
+        if action=='content'
+            system Config::SYSTEM.editor+' '+File.join(Config::SYSTEM.path['root'],'Core',Config::SYSTEM.path['blocks'],blockname+'.'+Config::SYSTEM.extensions['block'])
+        else
+            if not val=args[2]
+                puts 'not enough arguments'
+            else
+                block = Core::Block.new blockname
+                block.load
+                case action
+                when 'name'
+                    if Util.valid? val
+                        block.blockname = val
+                    else
+                        puts 'invalid new blockname'
+                    end
+                when 'title'
+                    puts block.blocktitle
+                    block.blocktitle = val
+                    puts block.blocktitle
+                when 'type'
+                    if File.exist? File.join(Config::SYSTEM.path['root'],'Core',Config::SYSTEM.path['block_modules'],val+'.rb')
+                        block.blocktype = val
+                    else
+                        puts 'unknown blocktype'
+                    end
+                else
+                    puts 'invalid action'
+                    return
+                end
+                block.dump
+            end
+        end
+       
+    end # }}}
+    # {{{ chblock description
+    def Userspace.chblock_description
+        puts 'is used for changing attributes of blocks'
+    end # }}}
+    # {{{ chblock helper
+    def Userspace.chblock_helper (arg)
+        if not arg
+           puts 'chblock can be used to change the block-attributes.'
+           puts 'For changing the content of a block, type: '
+           puts '  [blockname] [content]'
+           puts 'For modification of one of its arguments, type:'
+           puts '  [blockname] [name|title|type] [value]'
+       else
+           puts 'help accepts no additional arguments'
+       end
+    end # }}}
 
 
 end
