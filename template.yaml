@@ -1,0 +1,5 @@
+substitution:
+
+    name:   'abc'
+    xyz:    'yesyesyoa'
+    lulz:   '{{name}}'
