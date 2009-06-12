@@ -26,19 +26,18 @@ module Userspace
     # {{{ mkblock
     def Userspace.mkblock (args)
         if !args || args.size < 3
-            puts 'not enough arguments'
-            return
+            raise 'Not enough arguments.'
         end
         blockname = args[0]
         blocktitle = args[1]
         blocktype = args[2]
 
         if not Utils.valid? blockname
-            puts 'invalid blockname'
+            raise 'Invalid blockname.'
         elsif File.exist? fqn = File.join(Config::SYSTEM.path['root'],'Core',Config::SYSTEM.path['blocks'],blockname+'.'+Config::SYSTEM.extensions['block'])
-            puts 'block already exists'
+            raise 'Block already exists.'
         elsif not File.exist? File.join(Config::SYSTEM.path['root'],'Core',Config::SYSTEM.path['block_modules'],blocktype+'.rb')
-            puts 'unknown Blocktype'
+            raise 'Unknown Blocktype.'
         else
             require File.join(Config::SYSTEM.path['root'],'Core',Config::SYSTEM.path['block_modules'],blocktype)
 
@@ -54,7 +53,7 @@ module Userspace
     end # }}}
     # {{{ mkblock description
     def Userspace.mkblock_description
-        puts 'is used for creation of blocks'
+        puts 'is used to create blocks'
     end # }}}
     # {{{ mkblock helper
     def Userspace.mkblock_helper (arg)
@@ -71,15 +70,14 @@ module Userspace
     # {{{ rmblock
     def Userspace.rmblock args
         if !args || args.size < 1
-            puts 'not enough arguments'
-            return
+            raise 'Not enough arguments'
         end
         blockname = args[0]
 
     if not Utils.valid? blockname
-        puts 'invalid blockname'
+        raise 'Invalid blockname'
         elsif not File.exist? fqn = File.join(Config::SYSTEM.path['root'],'Core',Config::SYSTEM.path['blocks'],blockname+'.'+Config::SYSTEM.extensions['block'])
-            puts 'block doesn\'t exist'
+            raise 'Block doesn\'t exist'
         else
            block = Core::Block.new blockname
            block.load
@@ -105,17 +103,19 @@ module Userspace
     # {{{ rmblock
     def Userspace.lsblock args
         if !args || args.size < 1
-            Dir.open(File.join(Config::SYSTEM.path['root'],'Core',Config::SYSTEM.path['blocks'])).select { |d| d =~ /.*\.#{Config::SYSTEM.extensions['block']}$/ }.each do |b|
-                puts b[0..-1*(Config::SYSTEM.extensions['block'].length+2)]
+            Dir.open(File.join(Config::SYSTEM.path['root'],'Core',Config::SYSTEM.path['blocks'])).select do |d|
+                d =~ /.*\.#{Config::SYSTEM.extensions['block']}$/ }.each do |b|
+                    puts b[0..-1*(Config::SYSTEM.extensions['block'].length+2)]
+                end
             end
             return
         end
         blockname = args[0]
 
         if not Utils.valid? blockname
-            puts 'invalid blockname'
+            raise 'Invalid blockname'
         elsif not File.exist? File.join(Config::SYSTEM.path['root'],'Core',Config::SYSTEM.path['blocks'],blockname+'.'+Config::SYSTEM.extensions['block'])
-            puts 'block doesn\'t exist'
+            raise 'Block doesn\'t exist'
         else
            block = Core::Block.new blockname
            block.load
@@ -144,12 +144,11 @@ module Userspace
     # {{{ chblock
     def Userspace.chblock args
         if !args || args.length < 2
-            puts 'not enough arguments'
-            return
+            raise 'Not enough arguments'
         end
 
         if not Utils.valid? args[0]
-            puts 'invalid blockname'
+            raise 'Invalid blockname'
             return
         end
 
@@ -160,7 +159,7 @@ module Userspace
             system Config::SYSTEM.editor+' '+File.join(Config::SYSTEM.path['root'],'Core',Config::SYSTEM.path['blocks'],blockname+'.'+Config::SYSTEM.extensions['block'])
         else
             if not val=args[2]
-                puts 'not enough arguments'
+                raise 'Not enough arguments'
             else
                 block = Core::Block.new blockname
                 block.load
@@ -169,7 +168,7 @@ module Userspace
                     if Util.valid? val
                         block.blockname = val
                     else
-                        puts 'invalid new blockname'
+                        raise 'Invalid new blockname'
                     end
                 when 'title'
                     puts block.blocktitle
@@ -179,11 +178,10 @@ module Userspace
                     if File.exist? File.join(Config::SYSTEM.path['root'],'Core',Config::SYSTEM.path['block_modules'],val+'.rb')
                         block.blocktype = val
                     else
-                        puts 'unknown blocktype'
+                        raise 'Unknown blocktype'
                     end
                 else
-                    puts 'invalid action'
-                    return
+                    raise 'Invalid action'
                 end
                 block.dump
             end
@@ -192,7 +190,7 @@ module Userspace
     end # }}}
     # {{{ chblock description
     def Userspace.chblock_description
-        puts 'is used for changing attributes of blocks'
+        puts 'is used to change attributes of blocks'
     end # }}}
     # {{{ chblock helper
     def Userspace.chblock_helper (arg)

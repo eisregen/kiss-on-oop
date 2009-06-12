@@ -37,7 +37,7 @@ module CMS
                 Userspace.send((ARGV[1]+'_helper').to_sym,ARGV[2])
             end
         else
-            puts 'help not found'
+            raise 'Help not found'
         end
     else
         if Userspace.methods.reject{|m| m=~ /.*\_helper$/}.include? ARGV[0]
@@ -50,6 +50,9 @@ module CMS
             puts 'command not found'
         end
     end
+rescue => err
+    puts "An error occurred: #{err}"
+
 
 
 end
