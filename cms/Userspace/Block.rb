@@ -34,10 +34,13 @@ module Userspace
 
         if not Utils.valid? blockname
             raise 'Invalid blockname.'
+
         elsif File.exist? fqn = File.join(Config::SYSTEM.path['root'],'Core',Config::SYSTEM.path['blocks'],blockname+'.'+Config::SYSTEM.extensions['block'])
             raise 'Block already exists.'
+
         elsif not File.exist? File.join(Config::SYSTEM.path['root'],'Core',Config::SYSTEM.path['block_modules'],blocktype+'.rb')
             raise 'Unknown Blocktype.'
+
         else
             require File.join(Config::SYSTEM.path['root'],'Core',Config::SYSTEM.path['block_modules'],blocktype)
 
@@ -100,16 +103,18 @@ module Userspace
     end # }}}
 
 
-    # {{{ rmblock
+    # {{{ lsblock
     def Userspace.lsblock args
         if !args || args.size < 1
-            Dir.open(File.join(Config::SYSTEM.path['root'],'Core',Config::SYSTEM.path['blocks'])).select do |d|
-                d =~ /.*\.#{Config::SYSTEM.extensions['block']}$/ }.each do |b|
-                    puts b[0..-1*(Config::SYSTEM.extensions['block'].length+2)]
-                end
+            block_path = File.join(Config::SYSTEM.path['root'],'Core',Config::SYSTEM.path['blocks'])
+
+            Dir.open(block_path).select { |d| d =~ /.*\.#{Config::SYSTEM.extensions['block']}$/ }.each do |b|
+                puts b[0..-1*(Config::SYSTEM.extensions['block'].length+2)]
             end
+
             return
         end
+
         blockname = args[0]
 
         if not Utils.valid? blockname
