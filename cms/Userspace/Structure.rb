@@ -20,6 +20,7 @@ module CMS
 
     require File.join('cms','Config','Settings')
     require File.join('cms','Structure','Structure')
+    require File.join('cms','Utils','Utils')
 
     # {{{ mkstruct
     def Userspace.mkstruct (args)
@@ -56,7 +57,7 @@ module CMS
       # force rm, even if page has children
       if struct.is_parent?(name) && (force == '-f')
         children = struct.get_children(name)
-        puts "Removing children:\n#{unlines children}"
+        puts "Removing children:\n#{Utils.unlines children}"
 
         result = struct.rm_page(name)
 
@@ -93,7 +94,7 @@ module CMS
       else
         parent = args[0]
       end
-      puts (get_tree(parent))
+      puts (Utils.get_tree(parent))
 
     end # }}}
     # {{{ lsstruct description
@@ -106,30 +107,6 @@ module CMS
       puts 'If no page is given, lsstruct lists all elements.'
       puts 'Options:  [name]'
     end # }}}
-
-    private # {{{ Private methods
-    # Get the tree structure as an array of Strings
-    def Userspace.get_tree (parent, struct = Structure::Structure.new.load)
-
-      result = []
-      struct.get_children(parent).each do |child|
-
-        result <<= child
-        if struct.has_children? child
-          result.concat(get_tree(child).map {|s| " |-" + s})
-        end
-
-      end
-
-      return result
-    end
-
-    # Turn an Array of Strings into one String, separated by "\n"
-    def Userspace.unlines (array)
-      array[0..-2].map{|x| x << "\n"} << array[-1]
-    end
-
-    public # }}}
 
   end
 
