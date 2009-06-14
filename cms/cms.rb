@@ -13,7 +13,7 @@
 #   of there corresponding description-methods will be shown.
 #
 #   The help argument can be followed by a method name. In this case, the
-#   helper-method of the given method is calles with all following
+#   help-method of the given method is calles with all following
 #   commandlinearguments in one given array.
 #
 
@@ -30,16 +30,16 @@ module CMS
 
             puts 'Possible commands are:'
 
-            (Userspace.methods false).reject{|m| m=~ /.*\_helper$/}.reject{|m| m=~ /.*\_description$/}.each do |m|
+            (Userspace.methods false).reject{|m| m=~ /.*\_help$/}.reject{|m| m=~ /.*\_description$/}.each do |m|
                 print '\''+m+'\' '
                 Userspace.send((m+'_description').to_sym)
             end
 
-        elsif Userspace.methods.reject{|m| m=~ /.*\_helper$/}.include? ARGV[1]
+        elsif Userspace.methods.reject{|m| m=~ /.*\_help$/}.include? ARGV[1]
             if not ARGV[2]
-                Userspace.send((ARGV[1]+'_helper').to_sym,nil)
+                Userspace.send((ARGV[1]+'_help').to_sym,nil)
             else
-                Userspace.send((ARGV[1]+'_helper').to_sym,ARGV[2])
+                Userspace.send((ARGV[1]+'_help').to_sym,ARGV[2])
             end
 
         else
@@ -47,7 +47,7 @@ module CMS
         end
 
     else
-        if Userspace.methods.reject{|m| m=~ /.*\_helper$/}.include? ARGV[0]
+        if Userspace.methods.reject{|m| m=~ /.*\_help$/}.include? ARGV[0]
             if not ARGV[1]
                 Userspace.send(ARGV[0],nil)
             else
@@ -58,7 +58,7 @@ module CMS
         end
     end
 
-rescue => err
-    puts "An error occurred: #{err}"
+#rescue => err
+    #puts "An error occurred: #{err}"
 
 end

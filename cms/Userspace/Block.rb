@@ -58,8 +58,8 @@ module Userspace
     def Userspace.mkblock_description
         puts 'is used to create blocks'
     end # }}}
-    # {{{ mkblock helper
-    def Userspace.mkblock_helper (arg)
+    # {{{ mkblock help
+    def Userspace.mkblock_help (arg)
        if not arg
            puts 'mkblock can be used to create a new content block'
            puts 'The following arguments should be given:'
@@ -91,8 +91,8 @@ module Userspace
     def Userspace.rmblock_description
         puts 'is used for deletion of blocks'
     end # }}}
-    # {{{ rmblock helper
-    def Userspace.rmblock_helper (arg)
+    # {{{ rmblock help
+    def Userspace.rmblock_help (arg)
         if not arg
            puts 'rmblock can be used to delete a given block'
            puts 'The following argument should be given:'
@@ -133,8 +133,8 @@ module Userspace
     def Userspace.lsblock_description
         puts 'is used for listing of blocks'
     end # }}}
-    # {{{ lsblock helper
-    def Userspace.lsblock_helper (arg)
+    # {{{ lsblock help
+    def Userspace.lsblock_help (arg)
         if not arg
            puts 'lsblock can be used to show all blocks.'
            puts 'Besides it can be used to view the details of a block.'
@@ -197,8 +197,8 @@ module Userspace
     def Userspace.chblock_description
         puts 'is used to change attributes of blocks'
     end # }}}
-    # {{{ chblock helper
-    def Userspace.chblock_helper (arg)
+    # {{{ chblock help
+    def Userspace.chblock_help (arg)
         if not arg
            puts 'chblock can be used to change the block-attributes.'
            puts 'For changing the content of a block, type: '
