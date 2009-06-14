@@ -40,8 +40,7 @@ module CMS
     # {{{ mkstruct help
     def Userspace.mkstruct_help (arg)
       puts 'mkstruct adds a page to the current structure'
-      puts 'Options:'
-      puts '    <name> [<parent>]'
+      puts 'Options:  <name> [<parent>]'
     end # }}}
 
     # {{{ rmstruct
@@ -83,8 +82,7 @@ module CMS
     # {{{ rmstruct help
     def Userspace.rmstruct_help (arg)
       puts 'rmstruct is used to remove a given page from the structure'
-      puts 'Options:'
-      puts '    <name> [-f]'
+      puts 'Options:  <name> [-f]'
     end # }}}
 
     # {{{ lsstruct
@@ -106,8 +104,7 @@ module CMS
     def Userspace.lsstruct_help (arg)
       puts 'lsstruct lists the structure of a given page.'
       puts 'If no page is given, lsstruct lists all elements.'
-      puts "\nOptions:"
-      puts '    [name]'
+      puts 'Options:  [name]'
     end # }}}
 
     private # {{{ Private methods
