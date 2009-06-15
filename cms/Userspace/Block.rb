@@ -22,6 +22,7 @@ module Userspace
     MODULE_PATH = 'Userspace'
     require File.join(Config::SYSTEM.path['root'],'Utils','Utils')
     require File.join(Config::SYSTEM.path['root'],'Core','Block')
+    
    
     # {{{ mkblock
     def Userspace.mkblock (args)
@@ -160,29 +161,29 @@ module Userspace
 
         blockmodname = args[0]
 
-        if not Utils.valid? blockname
-            raise 'Invalid blockname'
-        elsif not File.exist? File.join(Config::SYSTEM.path['root'],'Core',Config::SYSTEM.path['blocks'],blockname+'.'+Config::SYSTEM.extensions['block'])
-            raise 'Block doesn\'t exist'
+        if not Utils.valid? blockmodname
+            raise 'Invalid Blockmodulename'
+        elsif not File.exist? File.join(Config::SYSTEM.path['root'],'Core',Config::SYSTEM.path['block_modules'],blockmodname+'.rb')
+            raise 'Blockmodule doesn\'t exist'
         else
-           block = Core::Block.new blockname
-           block.load
-           puts 'blockname:   '+block.blockname
-           puts 'blocktitle:  '+block.blocktitle
-           puts 'blocktype:   '+block.blocktype
+            require File.join(Config::SYSTEM.path['root'],'Core',Config::SYSTEM.path['block_modules'],blockmodname+'.rb')
+            puts CMS::Core::BlockModules.const_get(blockmodname)::TITLE+' - '+CMS::Core::BlockModules.const_get(blockmodname)::DESCRIPTION
+            puts '  Author: '+CMS::Core::BlockModules.const_get(blockmodname)::AUTHOR
+            puts '  Add.  : '+CMS::Core::BlockModules.const_get(blockmodname)::ADDITIONAL
+
         end
     end # }}}
     # {{{ lsblockmodule description
     def Userspace.lsblockmodule_description
-        puts 'is used for listing of blocks'
+        puts 'is used for listing of Blocksmodules'
     end # }}}
     # {{{ lsblockmodule help
     def Userspace.lsblockmodule_help (arg)
         if not arg
-           puts 'lsblock can be used to show all blocks.'
-           puts 'Besides it can be used to view the details of a block.'
+           puts 'lsblockmodule can be used to show all Blockmodules.'
+           puts 'Besides it can be used to view the details of a Blockmodule.'
            puts 'For that, the following argument should be given:'
-           puts '  [blockname]'
+           puts '  [blockmodulename]'
        else
            puts 'help accepts no additional arguments'
        end
