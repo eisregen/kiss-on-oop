@@ -2,3 +2,9 @@
 - block1
 - - blocktitle numero uno
   - CMS::Core::BlockModules::TextBlock
+- block2
+- - titleos de blockos duos
+  - CMS::Core::BlockModules::TextBlock
+- block3
+- - This is Block 3
+  - CMS::Core::BlockModules::TextBlock

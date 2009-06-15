@@ -8,23 +8,23 @@ module CMS
     require 'cms/Core/BlockModules/TextBlock'
     require 'cms/Core/Block'
 
- #   pg = Core::Page.new 'page1'
+    pg = Core::Page.new 'page1'
 
  #   pg.blocks=['block1','block2']
 
-#    pg.pagetitle = 'the title'
+ #   pg.pagetitle = 'the title'
 
-#    pg.dump
+ #   pg.dump
     
-#    pg.load
+    pg.load
 
- #   puts pg.html
+    puts pg.html
     
 
 #    block = CMS::BlockModules::TextBlock.new 'block1'
-    block = CMS::Core::Block.new 'block1'
-    block.load
-    puts block.html
+#    block = CMS::Core::Block.new 'block1'
+#    block.load
+#    puts block.html
 
 
 

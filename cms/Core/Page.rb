@@ -86,13 +86,7 @@ module CMS
                 @blocks.each do |block|
                    blk = Core::Block.new block
                    blk.load
-                   puts 'page_html: '+blk.blocksrc
-                   require File.join(Config::SYSTEM.path['root'],'Core',Config::SYSTEM.path['block_modules'],blk.blocktype)
-                   blk = CMS::BlockModules.const_get(blk.blocktype).new block
-                   blk.load
-
-                   html+=blk.html
-                   html+='lulz'
+                   html+=blk.html+"\r\n\r\n"
                 end
                 return html
             end # }}}

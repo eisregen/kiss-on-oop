@@ -60,9 +60,6 @@ module CMS
                 end
 
                 @blockname = blockname
-                
-                puts 'blockname: '+@blockname+', FQN: '+@blockfqn
-
             end # }}}
 
             def setBlocktype type
@@ -120,10 +117,6 @@ module CMS
 #                    @blocktype = CMS::Core::BlockModules.const_get(blockfile[index+1][1]).new(@blockname,@blocktitle,@blocksrc)
                     self.setBlocktype blockfile[index+1][1].split('::').last
                 end
-                puts 'blocktitle: '+@blocktitle+', type: '+@blocktype.class.to_s
-                puts 'blocksrc: '
-                puts @blocksrc
-
                 @blocktype.afterLoad
             end # }}}
 
