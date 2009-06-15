@@ -44,7 +44,7 @@ module CMS
     # not really improve the speed or something like that, it is just for
     # readability
     def Utils.textile (string) # {{{
-      RedCloth.new(IO.readlines(blkfile).join).to_html
+      RedCloth.new(string).to_html
     end # }}}
 
   end # }}}
