@@ -14,8 +14,9 @@ module CMS
         require File.join('cms','Config','Settings')
 
         require File.join(Config::SYSTEM.path['root'],'Utils','Utils')
+        require File.join(Config::SYSTEM.path['root'],'Core','Block')
 
-        PAGE_FILE_PATH = File.join(Config::SYSTEM.path['root'],Config::SYSTEM.path['module'],Config::SYSTEM.path['blocks'],Config::SYSTEM.path['block_file'])
+        PAGE_FILE_PATH = File.join(Config::SYSTEM.path['root'],Config::SYSTEM.path['module'],Config::SYSTEM.path['pages'],Config::SYSTEM.path['page_file'])
 
 
         #    Dir.open(BLOCK_MODULE_PATH).select { |d| d =~ /.*\.rb$/ }.each do |f|
@@ -27,92 +28,73 @@ module CMS
         # {{{ Block definition
         class Page
 
-            attr_accessor :blocksrc
-            attr_accessor :blocktitle
-            attr_accessor :blockname
-            attr_accessor :blocktype
+            attr_accessor :pagename
+            attr_accessor :pagetitle
+            attr_accessor :blocks
 
-            # the blockname format is not specified. It can be with ending or without
-            #   it throws an ArgumentError whith a message whats went wrong
-            def initialize (blockname) # {{{
-
-                # if the blockname is with ending, it'll be cutted
-                @blockfqn = File.join(Config::SYSTEM.path['root'],Config::SYSTEM.path['module'],Config::SYSTEM.path['blocks'])
-                if blockname =~ /.*\.#{Config::SYSTEM.extensions['block']}$/
-                    @blockfqn = File.join(@blockfqn,blockname)
-                    blockname = blockname[0..-1*(Config::SYSTEM.extensions['block'].length+2)]
-                else
-                    @blockfqn = File.join(@blockfqn,blockname+'.'+Config::SYSTEM.extensions['block'])
-                end
-
-                @blockname = blockname
-
+            def initialize (pagename) # {{{
+                @pagename = pagename
             end # }}}
 
             def dump # {{{
-                if @blocksrc
-                    File.open(@blockfqn,File::WRONLY|File::TRUNC|File::CREAT) do |f|
-                        @blocksrc.each {|l| f << l}
+                if @blocks
+                    if not File.exist? PAGE_FILE_PATH
+                        # if the yaml file doesnt exist, create an empty list,
+                        pagefile = []
+                    else
+                        # otherwise load the file
+                        pagefile = YAML::load_file PAGE_FILE_PATH
                     end
-                else
-                    FileUtils.touch @blockfqn
-                end
 
-                if not File.exist? BLOCK_FILE_PATH
-                    # if the yaml file doesnt exist, create an empty list,
-                    blockfile = []
-                else
-                    # otherwise load the file
-                    blockfile = YAML::load_file BLOCK_FILE_PATH
-                end
+                    # adds the metainformation to the yaml-file TODO: file modifier oO
+                    if pagefile.include? @pagename
+                        i = pagefile.index @pagename
+                    end
+                    pagefile += [@pagename,[@pagetitle,@blocks]]
 
-                # adds the metainformation to the yaml-file TODO: file modifier oO
-                if blockfile.include? @blockname
-                    i = blockfile.index @blockname
+                    File.open(PAGE_FILE_PATH, 'w') do |out|
+                        YAML::dump(pagefile, out )
+                    end
+                    return true
                 end
-                blockfile += [@blockname,[@blocktitle,@blocktype]]
-
-                File.open(BLOCK_FILE_PATH, 'w') do |out|
-                    YAML::dump(blockfile, out )
-                end
-
+                false
             end # }}}
 
-            # if the block was already existent and should only be changed, instead of a
-            # first dump, a load gets the blocksource from the file
             def load # {{{
-                @blocksrc = ''
-                File.open(@blockfqn,File::RDONLY|File::TRUNC|File::CREAT) do |f|
-                    f.each {|l| @blocksrc.puts l}
-                end
-
                 # get metainformation
-                blockfile = YAML::load_file BLOCK_FILE_PATH
-                if index=blockfile.index(@blockname)
-                    @blocktitle = blockfile[index+1][0]
-                    @blocktype = blockfile[index+1][1]
+                pagefile = YAML::load_file PAGE_FILE_PATH
+                if index=pagefile.index(@pagename)
+                    @pagetitle = pagefile[index+1][0]
+                    @blocks = pagefile[index+1][1]
                 end
 
             end # }}}
 
-            # returns a list of all important information about the derived type of
-            # content-block. This could be useful for a block-type menu.
-            #def information # {{{
-                #[@author,@title,@description,@additional]
-            #end # }}}
-
-            # removes all the crap.. THE BLOCK WILL BE ERASED! :P
-            # TODO: implement it..
+            # removes all the crap..
             def delete # {{{
-                File.delete @blockfqn
+                pagefile = YAML::load_file PAGE_FILE_PATH
+                pagefile -= [@pagename,[@pagetitle,@blocks]]
 
-                blockfile = YAML::load_file BLOCK_FILE_PATH
-                blockfile -= [@blockname,[@blocktitle,@blocktype]]
-
-                File.open(BLOCK_FILE_PATH, 'w') do |out|
-                    YAML.dump(blockfile, out )
+                File.open(PAGE_FILE_PATH, 'w') do |out|
+                    YAML.dump(pagefile, out )
                 end
 
+            end # }}}
+
+            def html # {{{
+                html = ''
+                @blocks.each do |block|
+                   blk = Core::Block.new block
+                   blk.load
+                   puts 'page_html: '+blk.blocksrc
+                   require File.join(Config::SYSTEM.path['root'],'Core',Config::SYSTEM.path['block_modules'],blk.blocktype)
+                   blk = CMS::BlockModules.const_get(blk.blocktype).new block
+                   blk.load
+
+                   html+=blk.html
+                   html+='lulz'
+                end
+                return html
             end # }}}
 
         end # }}}

@@ -49,6 +49,7 @@ system:
         block_modules:  'BlockModules'
         block_file:     'blocks.yaml'
         pages:          'PageFiles'
+        page_file:      'pages.yaml'
     
     page_order:         'order'
  

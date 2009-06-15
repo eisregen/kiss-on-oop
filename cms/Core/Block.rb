@@ -62,6 +62,8 @@ module CMS
 
                 @blockname = blockname
 
+                puts @blockfqn
+
             end # }}}
 
             def dump # {{{
@@ -97,8 +99,10 @@ module CMS
             # first dump, a load gets the blocksource from the file
             def load # {{{
                 @blocksrc = ''
-                File.open(@blockfqn,File::RDONLY|File::TRUNC|File::CREAT) do |f|
-                    f.each {|l| @blocksrc.puts l}
+                puts @blockfqn
+                IO.readlines(@blockfqn) do |l|
+                    puts l
+                    @blocksrc.puts l
                 end
 
                 # get metainformation
@@ -107,6 +111,8 @@ module CMS
                     @blocktitle = blockfile[index+1][0]
                     @blocktype = blockfile[index+1][1]
                 end
+
+                puts @blocksrc
 
             end # }}}
 

@@ -12,6 +12,7 @@ module CMS
     module BlockModules
 
         require File.join('cms','Core','Block')
+        require File.join('cms','Utils','Utils')
 
         class TextBlock < Core::Block
             def initialize (blockname)
@@ -23,7 +24,8 @@ module CMS
             end
 
             def html
-                Utils.textile @blocksrc
+                puts 'HTML: '+@blocksrc
+                return Utils.textile @blocksrc
             end
         end
 

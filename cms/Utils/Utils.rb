@@ -23,7 +23,7 @@ module Utils # {{{
     # not really improve the speed or something like that, it is just for
     # readability
     def Utils.textile (string) # {{{
-        RedCloth.new(IO.readlines(blkfile).join).to_html
+        RedCloth.new(string).to_html
     end # }}}
 
     # Turns an Array of Strings into one String, separated by "\n"
