@@ -45,7 +45,6 @@ module CMS
             attr_accessor :blocksrc
             attr_accessor :blocktitle
             attr_accessor :blockname
-            attr_accessor :blocktype
 
             # the blockname format is not specified. It can be with ending or without
             #   it throws an ArgumentError whith a message whats went wrong
@@ -61,8 +60,15 @@ module CMS
                 end
 
                 @blockname = blockname
-
             end # }}}
+
+            def setBlocktype type
+                @blocktype = CMS::Core::BlockModules.const_get(type).new(@blockname,@blocktitle,@blocksrc)
+            end
+
+            def getBlocktype
+                return @blocktype.class.to_s
+            end
 
             def dump # {{{
                 if @blocksrc
@@ -81,15 +87,18 @@ module CMS
                     blockfile = YAML::load_file BLOCK_FILE_PATH
                 end
 
-                # adds the metainformation to the yaml-file TODO: file modifier oO
+                # adds the metainformation to the yaml-file 
                 if blockfile.include? @blockname
                     i = blockfile.index @blockname
                 end
-                blockfile += [@blockname,[@blocktitle,@blocktype]]
+                blockfile += [@blockname,[@blocktitle,self.getBlocktype]]
 
+                #TODO: file modifier oO
                 File.open(BLOCK_FILE_PATH, 'w') do |out|
                     YAML::dump(blockfile, out )
                 end
+
+                @blocktype.afterDump
 
             end # }}}
 
@@ -97,29 +106,26 @@ module CMS
             # first dump, a load gets the blocksource from the file
             def load # {{{
                 @blocksrc = ''
-                File.open(@blockfqn,File::RDONLY|File::TRUNC|File::CREAT) do |f|
-                    f.each {|l| @blocksrc.puts l}
+                IO.readlines(@blockfqn).each do |l|
+                    @blocksrc += l
                 end
 
                 # get metainformation
                 blockfile = YAML::load_file BLOCK_FILE_PATH
                 if index=blockfile.index(@blockname)
                     @blocktitle = blockfile[index+1][0]
-                    @blocktype = blockfile[index+1][1]
+#                    @blocktype = CMS::Core::BlockModules.const_get(blockfile[index+1][1]).new(@blockname,@blocktitle,@blocksrc)
+                    self.setBlocktype blockfile[index+1][1].split('::').last
                 end
-
+                @blocktype.afterLoad
             end # }}}
 
-            # returns a list of all important information about the derived type of
-            # content-block. This could be useful for a block-type menu.
-            #def information # {{{
-                #[@author,@title,@description,@additional]
-            #end # }}}
 
             # removes all the crap.. THE BLOCK WILL BE ERASED! :P
-            # TODO: implement it..
             def delete # {{{
                 File.delete @blockfqn
+
+                @blocktype.beforeDeletion
 
                 blockfile = YAML::load_file BLOCK_FILE_PATH
                 blockfile -= [@blockname,[@blocktitle,@blocktype]]
@@ -129,6 +135,10 @@ module CMS
                 end
 
             end # }}}
+
+            def html
+                @blocktype.html
+            end
 
         end # }}}
 

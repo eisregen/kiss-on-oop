@@ -25,7 +25,7 @@ module CMS
 
       end
 
-      return result
+      result
     end
 
     # Turn an Array of Strings into one String, separated by "\n"

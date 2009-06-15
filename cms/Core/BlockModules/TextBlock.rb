@@ -9,24 +9,40 @@
 
 module CMS
 
-    module BlockModules
+    module Core
+        module BlockModules
 
-        require File.join('cms','Core','Block')
+            require File.join('cms','Core','Block')
+            require File.join('cms','Utils','Utils')
 
-        class TextBlock < Core::Block
-            def initialize (blockname)
-                super(blockname)
-                @author      = 'Jakob Holderbaum'
-                @title       = 'TextBlock'   
-                @description = 'A simple textile Parser'
-                @additional  = 'needs the RedCloth gem'
+            class TextBlock
+
+                AUTHOR      = 'Jakob Holderbaum'
+                TITLE       = 'TextBlock'   
+                DESCRIPTION = 'A simple textile Parser'
+                ADDITIONAL  = 'needs the RedCloth gem'
+
+                def initialize (blockname,blocktitle,blocksrc)
+                    @blockname = blockname
+                    @blocksrc = blocksrc
+                end
+
+                def html
+                    return Utils.textile @blocksrc
+                end
+
+                def afterLoad
+                end
+
+                def afterDump
+                end
+
+                def beforeDeletion
+                end
+
             end
 
-            def html
-                Utils.textile @blocksrc
-            end
         end
-
     end
 
 end

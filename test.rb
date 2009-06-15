@@ -4,18 +4,29 @@
 module CMS
 
 
-    require 'cms/Template/Template'
+    require 'cms/Core/Page'
+    require 'cms/Core/BlockModules/TextBlock'
+    require 'cms/Core/Block'
 
-    tpl = Template::Template.new 'template.yaml'
+    pg = Core::Page.new 'page1'
 
-    key = 'named'
-    puts tpl.isKey? key
-    puts tpl.getValue key
+ #   pg.blocks=['block1','block2']
 
-    puts tpl.getKeys
+ #   pg.pagetitle = 'the title'
 
-    puts 'yeeeeeeee'
+ #   pg.dump
+    
+    pg.load
 
-    puts tpl.parse "yeeee {{name}}\n   aaaaa {{lulz}}"
+    puts pg.html
+    
+
+#    block = CMS::BlockModules::TextBlock.new 'block1'
+#    block = CMS::Core::Block.new 'block1'
+#    block.load
+#    puts block.html
+
+
+
 
 end
