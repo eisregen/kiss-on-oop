@@ -57,14 +57,14 @@ module CMS
       # force rm, even if page has children
       if struct.is_parent?(name) && (force == '-f')
         children = struct.get_children(name)
-        puts "Removing children:\n#{unlines children}"
+        puts "Removing children:\n#{Utils.unlines children}"
 
         result = struct.rm_page(name)
 
       elsif struct.is_parent?(name)
         # Error: No force flag, but name has children
         children = struct.get_children(name)
-        raise "#{name} has children. Use \"rmstruct <name> -f\" to force action.\n\nChildren are:\n#{unlines children}"
+        raise "#{name} has children. Use \"rmstruct <name> -f\" to force action.\n\nChildren are:\n#{Utils.unlines children}"
 
       else
         # No error, remove single page

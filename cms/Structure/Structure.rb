@@ -142,7 +142,7 @@ module CMS
 
         # Drop parent
         if self.is_parent? name
-          result = result.drop name # drop :: Hash -> Int -> Hash - TODO
+          result.delete_if {|k,v| k == name}
         end
 
         # Get parent of page and remove it
