@@ -1,7 +1,4 @@
 --- 
 - block1
-- - blockname1
-  - TextBlock
-- block2
-- - blockname2
-  - TextBlock
+- - blocktitle numero uno
+  - CMS::Core::BlockModules::TextBlock

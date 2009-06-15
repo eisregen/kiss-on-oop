@@ -24,7 +24,7 @@ module CMS
 #    block = CMS::BlockModules::TextBlock.new 'block1'
     block = CMS::Core::Block.new 'block1'
     block.load
-    puts block.blocksrc
+    puts block.html
 
 
 

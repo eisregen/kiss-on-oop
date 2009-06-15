@@ -33,20 +33,20 @@ module Userspace
         blocktype = args[2]
 
         if not Utils.valid? blockname
-            raise 'Invalid blockname.'
+            puts 'Invalid Blockname.'
 
         elsif File.exist? fqn = File.join(Config::SYSTEM.path['root'],'Core',Config::SYSTEM.path['blocks'],blockname+'.'+Config::SYSTEM.extensions['block'])
-            raise 'Block already exists.'
+            puts 'Block already exists.'
 
         elsif not File.exist? File.join(Config::SYSTEM.path['root'],'Core',Config::SYSTEM.path['block_modules'],blocktype+'.rb')
-            raise 'Unknown Blocktype.'
+            puts 'Unknown Blocktype.'
 
         else
             require File.join(Config::SYSTEM.path['root'],'Core',Config::SYSTEM.path['block_modules'],blocktype)
 
-            block = BlockModules.const_get(blocktype).new blockname 
+            block = CMS::Core::Block.new blockname
             block.blocktitle = blocktitle
-            block.blocktype = blocktype
+            block.setBlocktype blocktype
             
             block.dump
 
@@ -135,6 +135,49 @@ module Userspace
     end # }}}
     # {{{ lsblock help
     def Userspace.lsblock_help (arg)
+        if not arg
+           puts 'lsblock can be used to show all blocks.'
+           puts 'Besides it can be used to view the details of a block.'
+           puts 'For that, the following argument should be given:'
+           puts '  [blockname]'
+       else
+           puts 'help accepts no additional arguments'
+       end
+    end # }}}
+
+
+    # {{{ lsblockmodule
+    def Userspace.lsblockmodule args
+        if !args || args.size < 1
+            blockmod_path = File.join(Config::SYSTEM.path['root'],'Core',Config::SYSTEM.path['block_modules'])
+
+            Dir.open(blockmod_path).select { |d| d =~ /.*\.rb$/ }.each do |b|
+                puts b[0..-4]
+            end
+
+            return
+        end
+
+        blockmodname = args[0]
+
+        if not Utils.valid? blockname
+            raise 'Invalid blockname'
+        elsif not File.exist? File.join(Config::SYSTEM.path['root'],'Core',Config::SYSTEM.path['blocks'],blockname+'.'+Config::SYSTEM.extensions['block'])
+            raise 'Block doesn\'t exist'
+        else
+           block = Core::Block.new blockname
+           block.load
+           puts 'blockname:   '+block.blockname
+           puts 'blocktitle:  '+block.blocktitle
+           puts 'blocktype:   '+block.blocktype
+        end
+    end # }}}
+    # {{{ lsblockmodule description
+    def Userspace.lsblockmodule_description
+        puts 'is used for listing of blocks'
+    end # }}}
+    # {{{ lsblockmodule help
+    def Userspace.lsblockmodule_help (arg)
         if not arg
            puts 'lsblock can be used to show all blocks.'
            puts 'Besides it can be used to view the details of a block.'
