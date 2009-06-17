@@ -28,7 +28,7 @@ module Userspace
     # {{{ mkpage
     def Userspace.mkpage (args)
       if !args || args.size < 3
-          puts 'Not enough arguments.'
+          puts 'Not enough arguments'
       else
         pagename = args[0]
         pagetitle = args[1]
