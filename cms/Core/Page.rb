@@ -36,6 +36,21 @@ module CMS
                 @pagename = pagename
             end # }}}
 
+            def exist?
+              if not File.exist? PAGE_FILE_PATH
+                # if the yaml file doesnt exist, no page exists
+                return false
+              else
+                # otherwise load the file
+                pagefile = YAML::load_file PAGE_FILE_PATH
+                if pagefile.include? @pagename
+                    return true
+                end
+              end
+
+              return false
+            end
+
             def dump # {{{
                 if @blocks
                     if not File.exist? PAGE_FILE_PATH

@@ -12,66 +12,71 @@ module CMS
 #   userspace-mthods
 #
 #   This are:
-#       mkblock 'blockname', 'blocktitle', 'blocktype'
+#       mkpage 'blockname', 'blocktitle', 'blocktype'
 #       
 #
 
 module Userspace
 
     require File.join('cms','Config','Settings')
-    require File.join(Config::SYSTEM.path['root'],'Utils','Utils')
-    require File.join(Config::SYSTEM.path['root'],'Core','Block')
+    MODULE_PATH = 'Userspace'
+    require File.join('cms','Utils','Utils')
+    require File.join('cms','Core','Block')
+    require File.join('cms','Core','Page')
     
    
-    # {{{ mkblock
-    def Userspace.mkblock (args)
-        if !args || args.size < 3
-            raise 'Not enough arguments.'
-        end
-        blockname = args[0]
-        blocktitle = args[1]
-        blocktype = args[2]
+    # {{{ mkpage
+    def Userspace.mkpage (args)
+      if !args || args.size < 3
+          puts 'Not enough arguments.'
+      else
+        pagename = args[0]
+        pagetitle = args[1]
+        blocknames = args[2..args.size]
 
-        if not Utils.valid? blockname
-            puts 'Invalid Blockname.'
+        if not Utils.valid? pagename
+          puts 'Invalid Pagename.'
 
-        elsif File.exist? fqn = File.join(Config::SYSTEM.path['root'],'Core',Config::SYSTEM.path['blocks'],blockname+'.'+Config::SYSTEM.extensions['block'])
-            puts 'Block already exists.'
-
-        elsif not File.exist? File.join(Config::SYSTEM.path['root'],'Core',Config::SYSTEM.path['block_modules'],blocktype+'.rb')
-            puts 'Unknown Blocktype.'
+        elsif File.exist? fqn = File.join('cms','Core','PageFiles',pagename+'.blk')
+          puts 'Page already exists.'
 
         else
-            require File.join(Config::SYSTEM.path['root'],'Core',Config::SYSTEM.path['block_modules'],blocktype)
+          blocks = []
+          blocknames.each do |b|
+            tmp = CMS::Core::Block.new(b)
+            if not tmp.exist?
+              puts 'Block '+b+' does not exist'
+              return
+            end
+            tmp.load
+            blocks << tmp
+          end
 
-            block = CMS::Core::Block.new blockname
-            block.blocktitle = blocktitle
-            block.setBlocktype blocktype
-            
-            block.dump
-
-            system Config::SYSTEM.editor+' '+fqn
-
+          blocks.each do |b|
+            puts b.html
+          end
         end
+      end
     end # }}}
-    # {{{ mkblock description
-    def Userspace.mkblock_description
-        puts 'is used to create blocks'
+    # {{{ mkpage description
+    def Userspace.mkpage_description
+        puts 'is used to create pages'
     end # }}}
-    # {{{ mkblock help
-    def Userspace.mkblock_help (arg)
+    # {{{ mkpage help
+    def Userspace.mkpage_help (arg)
        if not arg
-           puts 'mkblock can be used to create a new content block'
+           puts 'mkpage can be used to create a new page'
            puts 'The following arguments should be given:'
-           puts '  [blockname],[blocktitle],[blocktype]'
+           puts '  [pagename] [pagetitle] [list] [of] [blocks]'
        else
            puts 'help accepts no additional arguments'
        end
     end # }}}
 
-    
-    # {{{ rmblock
-    def Userspace.rmblock args
+## everything beyond THIS Line is copypasta for Userspace/Block.rb -- don't mind   
+
+    # {{{ rmpage
+    def Userspace.rmpage args
         if !args || args.size < 1
             raise 'Not enough arguments'
         end
@@ -87,14 +92,14 @@ module Userspace
            block.delete
         end
     end # }}}
-    # {{{ rmblock description
-    def Userspace.rmblock_description
+    # {{{ rmpage description
+    def Userspace.rmpage_description
         puts 'is used for deletion of blocks'
     end # }}}
-    # {{{ rmblock help
-    def Userspace.rmblock_help (arg)
+    # {{{ rmpage help
+    def Userspace.rmpage_help (arg)
         if not arg
-           puts 'rmblock can be used to delete a given block'
+           puts 'rmpage can be used to delete a given block'
            puts 'The following argument should be given:'
            puts '  [blockname]'
        else
@@ -103,8 +108,8 @@ module Userspace
     end # }}}
 
 
-    # {{{ lsblock
-    def Userspace.lsblock args
+    # {{{ lspage
+    def Userspace.lspage args
         if !args || args.size < 1
             block_path = File.join(Config::SYSTEM.path['root'],'Core',Config::SYSTEM.path['blocks'])
 
@@ -129,14 +134,14 @@ module Userspace
            puts 'blocktype:   '+block.blocktype
         end
     end # }}}
-    # {{{ lsblock description
-    def Userspace.lsblock_description
+    # {{{ lspage description
+    def Userspace.lspage_description
         puts 'is used for listing of blocks'
     end # }}}
-    # {{{ lsblock help
-    def Userspace.lsblock_help (arg)
+    # {{{ lspage help
+    def Userspace.lspage_help (arg)
         if not arg
-           puts 'lsblock can be used to show all blocks.'
+           puts 'lspage can be used to show all blocks.'
            puts 'Besides it can be used to view the details of a block.'
            puts 'For that, the following argument should be given:'
            puts '  [blockname]'
@@ -146,51 +151,8 @@ module Userspace
     end # }}}
 
 
-    # {{{ lsblockmodule
-    def Userspace.lsblockmodule args
-        if !args || args.size < 1
-            blockmod_path = File.join(Config::SYSTEM.path['root'],'Core',Config::SYSTEM.path['block_modules'])
-
-            Dir.open(blockmod_path).select { |d| d =~ /.*\.rb$/ }.each do |b|
-                puts b[0..-4]
-            end
-
-            return
-        end
-
-        blockmodname = args[0]
-
-        if not Utils.valid? blockmodname
-            raise 'Invalid Blockmodulename'
-        elsif not File.exist? File.join(Config::SYSTEM.path['root'],'Core',Config::SYSTEM.path['block_modules'],blockmodname+'.rb')
-            raise 'Blockmodule doesn\'t exist'
-        else
-            require File.join(Config::SYSTEM.path['root'],'Core',Config::SYSTEM.path['block_modules'],blockmodname+'.rb')
-            puts CMS::Core::BlockModules.const_get(blockmodname)::TITLE+' - '+CMS::Core::BlockModules.const_get(blockmodname)::DESCRIPTION
-            puts '  Author: '+CMS::Core::BlockModules.const_get(blockmodname)::AUTHOR
-            puts '  Add.  : '+CMS::Core::BlockModules.const_get(blockmodname)::ADDITIONAL
-
-        end
-    end # }}}
-    # {{{ lsblockmodule description
-    def Userspace.lsblockmodule_description
-        puts 'is used for listing of Blocksmodules'
-    end # }}}
-    # {{{ lsblockmodule help
-    def Userspace.lsblockmodule_help (arg)
-        if not arg
-           puts 'lsblockmodule can be used to show all Blockmodules.'
-           puts 'Besides it can be used to view the details of a Blockmodule.'
-           puts 'For that, the following argument should be given:'
-           puts '  [blockmodulename]'
-       else
-           puts 'help accepts no additional arguments'
-       end
-    end # }}}
-
-
-    # {{{ chblock
-    def Userspace.chblock args
+    # {{{ chpage
+    def Userspace.chpage args
         if !args || args.length < 2
             raise 'Not enough arguments'
         end
@@ -236,14 +198,14 @@ module Userspace
         end
        
     end # }}}
-    # {{{ chblock description
-    def Userspace.chblock_description
+    # {{{ chpage description
+    def Userspace.chpage_description
         puts 'is used to change attributes of blocks'
     end # }}}
-    # {{{ chblock help
-    def Userspace.chblock_help (arg)
+    # {{{ chpage help
+    def Userspace.chpage_help (arg)
         if not arg
-           puts 'chblock can be used to change the block-attributes.'
+           puts 'chpage can be used to change the block-attributes.'
            puts 'For changing the content of a block, type: '
            puts '  [blockname] [content]'
            puts 'For modification of one of its arguments, type:'

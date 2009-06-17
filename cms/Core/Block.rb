@@ -63,11 +63,27 @@ module CMS
             end # }}}
 
             def setBlocktype type
+                require File.join('cms','Core','BlockModules',type)
                 @blocktype = CMS::Core::BlockModules.const_get(type).new(@blockname,@blocktitle,@blocksrc)
             end
 
             def getBlocktype
                 return @blocktype.class.to_s
+            end
+
+            def exist?
+              if not File.exist? BLOCK_FILE_PATH
+                # if the yaml file doesnt exist, no page exists
+                return false
+              else
+                # otherwise load the file
+                blockfile = YAML::load_file BLOCK_FILE_PATH
+                if blockfile.include? @blockname
+                    return true
+                end
+              end
+
+              return false
             end
 
             def dump # {{{
@@ -114,8 +130,7 @@ module CMS
                 blockfile = YAML::load_file BLOCK_FILE_PATH
                 if index=blockfile.index(@blockname)
                     @blocktitle = blockfile[index+1][0]
-#                    @blocktype = CMS::Core::BlockModules.const_get(blockfile[index+1][1]).new(@blockname,@blocktitle,@blocksrc)
-                    self.setBlocktype blockfile[index+1][1].split('::').last
+                    self.setBlocktype(blockfile[index+1][1].split('::').last)
                 end
                 @blocktype.afterLoad
             end # }}}

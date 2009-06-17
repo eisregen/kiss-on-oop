@@ -19,8 +19,9 @@
 
 module CMS
 
-    require File.join('cms','Userspace','Block')
-    require File.join('cms','Userspace','Structure')
+    Dir.open(File.join('cms','Userspace')).select{ |f| f =~ /.*\.rb$/  }.each do |f|
+      require(File.join('cms','Userspace',f[0..-4]))
+    end
 
     if not ARGV[0]
         puts 'type \''+__FILE__+'\' help for usage information'
