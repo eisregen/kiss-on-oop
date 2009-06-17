@@ -7,7 +7,7 @@
 #   This file holds all methods, which should be accessible from the user and
 #   are related with the Structure:
 #
-#       mkstruct <name> [<parent>]
+#       mkstruct <name> [<parent>] [-r]
 #       rmstruct <name> [-f]
 #       chstruct <name> [<parent>]
 #       mvstrcut <name> count
@@ -29,9 +29,24 @@ module CMS
         raise 'Not enough arguments.'
       end
       name = args[0]
-      parent = args[1]
 
-      (Structure::Structure.new).load.add_page(name, parent).dump
+      if args[1] == '-r'
+        replace = true
+      else
+        parent = args[1]
+        replace = (args[2] == '-r')
+      end
+
+      struct = Structure::Structure.new.load
+
+      if not struct.is_elem? name
+        struct.add_page(name, parent)
+      else
+        struct.rm_page(name) if replace
+        struct.add_page(name, parent)
+      end
+
+      struct.dump
 
     end # }}}
     # {{{ mkstruct description
@@ -40,8 +55,37 @@ module CMS
     end # }}}
     # {{{ mkstruct help
     def Userspace.mkstruct_help (arg)
-      puts 'mkstruct adds a page to the current structure'
-      puts 'Options:  <name> [<parent>]'
+      puts 'mkstruct adds a page to the current structure.'
+      puts 'Use the -r option to set a new parent of an existing page (top if none given).'
+      puts 'Options:  <name> [<parent>] [-r]'
+    end # }}}
+
+    # {{{ mvstruct
+    def Userspace.mvstruct (args)
+
+      if not args || args.size < 2
+        raise 'Not enough arguments.'
+      end
+      name = args[0]
+      if (count = args[1].to_i) <= 0
+        raise "Null, negative or no number given: #{args[1]}"
+      end
+
+      struct = Structure::Structure.new.load
+
+      struct.mv_page(name, count)
+
+      struct.dump
+
+    end # }}}
+    # {{{ mvstruct description
+    def Userspace.mvstruct_description
+      puts 'Move a page in the current structure'
+    end # }}}
+    # {{{ mvstruct help
+    def Userspace.mvstruct_help (arg)
+      puts 'mvstruct moves a page in the current structure'
+      puts 'Options:  <name> <count>'
     end # }}}
 
     # {{{ rmstruct
@@ -57,14 +101,14 @@ module CMS
       # force rm, even if page has children
       if struct.is_parent?(name) && (force == '-f')
         children = struct.get_children(name)
-        puts "Removing children:\n#{unlines children}"
+        puts "Removing children:\n#{Utils.unlines children}"
 
         result = struct.rm_page(name)
 
       elsif struct.is_parent?(name)
         # Error: No force flag, but name has children
         children = struct.get_children(name)
-        raise "#{name} has children. Use \"rmstruct <name> -f\" to force action.\n\nChildren are:\n#{unlines children}"
+        raise "#{name} has children. Use \"rmstruct <name> -f\" to force action.\n\nChildren are:\n#{Utils.unlines children}"
 
       else
         # No error, remove single page
