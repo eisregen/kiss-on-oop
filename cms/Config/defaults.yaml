@@ -40,13 +40,13 @@ html:
 
 system:
 
-    # File paths
+    # File paths - DEPRECATED
     paths:
         root:           'cms'
         html:           'htdocs'
         module:         'Core'
-        blocks:         'BlockFiles'
-        block_modules:  'BlockModules'
+        blocks:         'Files'
+        block_modules:  'Modules'
         block_file:     'blocks.yaml'
         pages:          'PageFiles'
         page_file:      'pages.yaml'

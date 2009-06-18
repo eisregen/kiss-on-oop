@@ -1,10 +1,10 @@
 #
-# user settings
+# default Configuration
 #
-#   Change this file if you want to adjust/add your settings.
+#   DO *NOT* CHANGE THIS FILE
 #
-#   See cms/Config/defaults.yaml for a list of all possible settings (but
-#   *don't* change that file!).
+#   If you want to adjust these settings put them in config.yaml in the core
+#   directory of KISS
 #
 
 

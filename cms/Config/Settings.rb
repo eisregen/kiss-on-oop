@@ -21,10 +21,11 @@ module CMS
         require File.join('cms','Config','Config')
 
         # Load defaults
-        defaults   = Config::Configuration.new(File.join('cms','Config','defaults.yaml'))
+        config = Config::Configuration.new.load
 
         # Load user config and change default values
-        config    = Config::Configuration.new('config.yaml', defaults)
+        user   = Config::Configuration.new.load('config.yaml')
+        config.setConfig!(user)
 
         # Export settings
         SYSTEM = config.system
