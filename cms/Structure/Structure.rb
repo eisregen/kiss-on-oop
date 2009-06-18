@@ -29,8 +29,8 @@ module CMS
 
       # Load structure from filepath
       def load (filepath = STRUCT_PATH)
-        # TODO: Check if file exists
-        Structure.new(YAML::load_file filepath)
+        data = (YAML::load_file filepath) if File.exist? filepath
+        Structure.new data
       end
 
       # Save to YAML
