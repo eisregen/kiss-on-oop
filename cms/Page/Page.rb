@@ -14,9 +14,9 @@ module CMS
     require File.join('cms','Config','Settings')
 
     require File.join('cms','Utils','Utils')
-    require File.join('cms','Core','Block')
+    require File.join('cms','Block','Block')
 
-    PAGE_FILE_PATH = File.join('cms','Core','PageFiles','pages.yaml')
+    PAGE_FILE_PATH = File.join('cms','Page','pages.yaml')
 
     class Page
 
