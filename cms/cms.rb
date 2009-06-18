@@ -24,9 +24,9 @@ module CMS
   require (File.join('cms','Blocks','Blocks'))
   #require (File.join('cms','Templates','Templates'))
   # Load environments: Structure, Pages, Blocks, Templates
-  #STRUCT = Structure::Structure.new.load
-  #PAGES  = Pages::Pages.new.load
-  #BLOCKS = Blocks::Blocks.new.load
+  STRUCT = Structure::Structure.new.load
+  PAGES  = Pages::Pages.new.load
+  BLOCKS = Blocks::Blocks.new.load
   #TEMPS  = Templates::Templates.new.load
 
   Dir.open(File.join('cms','Userspace')).select{ |f| f =~ /.*\.rb$/  }.each do |f|

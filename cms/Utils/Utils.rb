@@ -9,11 +9,12 @@ require 'rubygems'
 require 'RedCloth'
 
 module CMS
-
   module Utils
 
+    # {{{ Structure
+
     # Get the tree structure as an array of Strings
-    def Utils.get_tree (parent, struct = Structure::Structure.new.load)
+    def Utils.tree_struct (parent, struct = STRUCT)
 
       result = []
       struct.get_children(parent).each do |child|
@@ -28,10 +29,12 @@ module CMS
       result
     end
 
+    # }}}
+
     # Turn an Array of Strings into one String, separated by "\n"
-    def Utils.unlines (array)
+    def Utils.unlines (array)# {{{
       array[0..-2].map{|x| x << "\n"} << array[-1]
-    end
+    end# }}}
 
     # checks the given argument against the defined validation rule
     # because of the savings as file, the names of blocks and pages shoud only

@@ -138,7 +138,7 @@ module CMS
       else
         parent = args[0]
       end
-      puts Utils.get_tree(parent)
+      puts Utils.tree_struct(parent)
 
     end # }}}
     # {{{ lsstruct description

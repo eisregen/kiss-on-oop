@@ -121,11 +121,23 @@ module CMS
 
       # {{{ Get methods
 
-      def get_blocktype (name)
+      # Type
+      def get_type (name)
         check_block name
 
         raise "No type set yet: #{name}" if @source[name]['type'].nil?
         @source[name]['type']
+      end
+
+      # Title
+      def get_title (name)
+        check_block name
+        @source[name]['title']
+      end
+
+      # Get all blocks
+      def get_names
+        @source.keys
       end
 
       # }}}
@@ -138,7 +150,7 @@ module CMS
 
       # Raise error if no such block
       def check_block name
-        raise "No such block: #{name}" if @source.key? name
+        raise "No such block: #{name}" unless @source.key? name
       end
 
       # Raise error if no such module

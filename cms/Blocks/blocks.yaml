@@ -1,10 +1,10 @@
 --- 
-block2: 
-  title: titleos de blockos duos
-  type: CMS::Blocks::Modules::TextBlock
-block3: 
-  title: This is Block 3
-  type: CMS::Blocks::Modules::TextBlock
 block1: 
   title: blocktitle numero uno
-  type: CMS::Blocks::Modules::TextBlock
+  type: TextBlock
+block2: 
+  title: titleos de blockos duos
+  type: TextBlock
+block3: 
+  title: This is Block 3
+  type: TextBlock
