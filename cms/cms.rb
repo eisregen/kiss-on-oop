@@ -19,47 +19,57 @@
 
 module CMS
 
-    Dir.open(File.join('cms','Userspace')).select{ |f| f =~ /.*\.rb$/  }.each do |f|
-      require(File.join('cms','Userspace',f[0..-4]))
-    end
+  require (File.join('cms','Structure','Structure'))
+  require (File.join('cms','Pages','Pages'))
+  require (File.join('cms','Blocks','Blocks'))
+  #require (File.join('cms','Templates','Templates'))
+  # Load environments: Structure, Pages, Blocks, Templates
+  #STRUCT = Structure::Structure.new.load
+  #PAGES  = Pages::Pages.new.load
+  #BLOCKS = Blocks::Blocks.new.load
+  #TEMPS  = Templates::Templates.new.load
 
-    if not ARGV[0]
-        puts 'type \''+__FILE__+'\' help for usage information'
+  Dir.open(File.join('cms','Userspace')).select{ |f| f =~ /.*\.rb$/  }.each do |f|
+    require(File.join('cms','Userspace',f[0..-4]))
+  end
 
-    elsif ARGV[0] == 'help'
-        if not ARGV[1]
+  if not ARGV[0]
+    puts 'Type \''+__FILE__+'\' help for usage information'
 
-            puts 'Possible commands are:'
+  elsif ARGV[0] == 'help'
+    if not ARGV[1]
 
-            (Userspace.methods false).reject{|m| m=~ /.*\_help$/}.reject{|m| m=~ /.*\_description$/}.each do |m|
-                print '\''+m+'\' '
-                Userspace.send((m+'_description').to_sym)
-            end
+      puts 'Possible commands are:'
 
-        elsif Userspace.methods.reject{|m| m=~ /.*\_help$/}.include? ARGV[1]
-            if not ARGV[2]
-                Userspace.send((ARGV[1]+'_help').to_sym,nil)
-            else
-                Userspace.send((ARGV[1]+'_help').to_sym,ARGV[2])
-            end
+      (Userspace.methods false).reject{|m| m=~ /.*\_help$/}.reject{|m| m=~ /.*\_description$/}.each do |m|
+        print '\''+m+'\' '
+        Userspace.send((m+'_description').to_sym)
+      end
 
-        else
-            raise 'Help not found'
-        end
+    elsif Userspace.methods.reject{|m| m=~ /.*\_help$/}.include? ARGV[1]
+      if not ARGV[2]
+        Userspace.send((ARGV[1]+'_help').to_sym,nil)
+      else
+        Userspace.send((ARGV[1]+'_help').to_sym,ARGV[2])
+      end
 
     else
-        if Userspace.methods.reject{|m| m=~ /.*\_help$/}.include? ARGV[0]
-            if not ARGV[1]
-                Userspace.send(ARGV[0],nil)
-            else
-                Userspace.send(ARGV[0],ARGV[1..-1])
-            end
-        else
-            puts 'command not found'
-        end
+      raise 'Help not found'
     end
 
-rescue => err
-    puts "An error occurred: #{err}"
+  else
+    if Userspace.methods.reject{|m| m=~ /.*\_help$/}.include? ARGV[0]
+      if not ARGV[1]
+        Userspace.send(ARGV[0],nil)
+      else
+        Userspace.send(ARGV[0],ARGV[1..-1])
+      end
+    else
+      raise 'Command not found'
+    end
+  end
+
+#rescue => err
+  #puts "An error occurred: #{err}"
 
 end

@@ -19,8 +19,8 @@ module CMS
 module Userspace
 
     require File.join('cms','Config','Settings')
-    require File.join(Config::SYSTEM.path['root'],'Utils','Utils')
-    require File.join(Config::SYSTEM.path['root'],'Core','Block')
+    require File.join('cms','Utils','Utils')
+    require File.join('cms','Blocks','Blocks')
     
    
     # {{{ mkblock

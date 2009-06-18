@@ -14,10 +14,10 @@ module CMS
     require File.join('cms','Config','Settings')
 
     require File.join('cms','Utils','Utils')
-    require File.join('cms','Block','Block')
+    require File.join('cms','Blocks','Blocks')
 
-    PAGES = File.join('cms','Page','pages.yaml')
-    FILE_PATH = File.join('cms','Page','Files')
+    PAGES = File.join('cms','Pages','pages.yaml')
+    FILE_PATH = File.join('cms','Pages','Files')
 
     class Pages
 
@@ -26,21 +26,21 @@ module CMS
       #attr_accessor :blocks
 
       def initialize (hash = nil, current = nil)
-        @file = hash if hash.is_a? Hash
+        @source = hash if hash.is_a? Hash
         @current = current if current.is_a? String
       end
 
       # {{{ Save and load
 
-      def load (name, filepath = PAGE_FILE_PATH)
+      def load (filepath = PAGES)
         # return a new page with the loaded data
         data = (YAML::load_file filepath) if File.exist? filepath
-        Page.new data
+        Pages.new data
       end
 
-      def dump (filepath = PAGE_FILE_PATH)
+      def dump (filepath = PAGES)
         File.open(filepath, 'w') do |out|
-          YAML::dump(@file, out)
+          YAML::dump(@source, out)
         end
       end
 
@@ -50,12 +50,12 @@ module CMS
 
       # See if self is empty or not
       def empty?
-        (not @file.is_a?(Hash)) || @file.empty?
+        (not @source.is_a?(Hash)) || @file.empty?
       end
 
       # Does a page exist?
       def exist? (name)
-        @file.key? name
+        @source.key? name
       end
 
       # }}}
@@ -64,33 +64,43 @@ module CMS
 
       # Get the title (String) of a given page
       def title (name)
-        raise "No such page: #{name}" unless ((not self.empty?) && (@file.key? name))
-        @file[name]['title']
+        raise "No such page: #{name}" unless ((not self.empty?) && (@source.key? name))
+        @source[name]['title']
       end
 
       # Get the blocks (Array of String) of a given page
       def blocks (name)
-        raise "No such page: #{name}" unless ((not self.empty?) && (@file.key? name))
-        @file[name]['blocks']
+        raise "No such page: #{name}" unless ((not self.empty?) && (@source.key? name))
+        @source[name]['blocks']
       end
 
       # Get the names (Array of String) of every page
       def all_names
         return Array.new if self.empty?
-        @file.keys
+        @source.keys
       end
 
       # }}}
 
       # {{{ Change values
 
+      # Add one page
+      def add_page (name, title, blocks)
+        raise "Page already exists: #{name}" if @source.key? name
+
+        @source[name]['title'] = title
+        @source[name]['blocks'] = blocks
+
+        self
+      end
+
       # Removes one page
       def rm_page (name)
-        result = @file
+        raise "No such page: #{name}" unless @source.key? name
 
-        raise "No such page: #{name}" unless result.key? name
+        @source.delete_if {|k,v| k == name}
 
-        result.delete_if {|k,v| k == name}
+        self
       end 
 
       # }}}

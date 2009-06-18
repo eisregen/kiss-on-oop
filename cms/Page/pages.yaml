@@ -1,6 +1,0 @@
---- 
-home:
-    title: The main page
-    blocks:
-        - block1
-        - block2
