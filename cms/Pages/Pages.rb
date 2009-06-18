@@ -9,16 +9,17 @@
 #
 
 module CMS
-  module Core
+  module Pages
 
     require File.join('cms','Config','Settings')
 
     require File.join('cms','Utils','Utils')
     require File.join('cms','Block','Block')
 
-    PAGE_FILE_PATH = File.join('cms','Page','pages.yaml')
+    PAGES = File.join('cms','Page','pages.yaml')
+    FILE_PATH = File.join('cms','Page','Files')
 
-    class Page
+    class Pages
 
       #attr_accessor :name
       #attr_accessor :title
@@ -50,6 +51,11 @@ module CMS
       # See if self is empty or not
       def empty?
         (not @file.is_a?(Hash)) || @file.empty?
+      end
+
+      # Does a page exist?
+      def exist? (name)
+        @file.key? name
       end
 
       # }}}

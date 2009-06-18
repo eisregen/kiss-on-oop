@@ -16,148 +16,138 @@
 #
 
 module CMS
-    module Core
+  module Blocks
 
-        require File.join('cms','Config','Settings')
+    require File.join('cms','Config','Settings')
+    require File.join('cms','Utils','Utils')
 
-        require File.join(Config::SYSTEM.path['root'],'Utils','Utils')
+    BLOCKS_PATH = File.join('cms','Blocks','blocks.yaml')
+    FILE_PATH   = File.join('cms','Blocks','Files')
+    MODULE_PATH = File.join('cms','Blocks','Modules')
 
-        BLOCK_FILE_PATH = File.join(Config::SYSTEM.path['root'],Config::SYSTEM.path['module'],Config::SYSTEM.path['blocks'],Config::SYSTEM.path['block_file'])
+    class Blocks
 
+      def initialize (hash = nil) 
 
-        # ERROR_ARG_NOT_GIVEN = ' must be given'
-        # ERROR_ARG_INVALID = ' produced the foollowing error: '
-        # ERROR_EXISTS = ' allready exists'
-        # ERROR_NOT_EXISTENT = ' don\'t exists'
+        @source = hash.is_a?(Hash) ? hash : Hash.new
 
+      end 
 
-        BLOCK_MODULE_PATH = File.join(Config::SYSTEM.path['root'],Config::SYSTEM.path['module'],Config::SYSTEM.path['block_modules'])
+      # {{{ Load and Save
 
-        #    Dir.open(BLOCK_MODULE_PATH).select { |d| d =~ /.*\.rb$/ }.each do |f|
-        #        require File.join(BLOCK_MODULE_PATH,f) 
-        #    end
+      # Load from file
+      def load (filepath = BLOCKS_PATH)
 
+        raise "File not found: #{filepath}" unless File.exist? filepath
 
+        @source = YAML::load_file filepath
 
-        # {{{ Block definition
-        class Block
+        # Compare loaded Hash with existing files in cms/Blocks/Modules
+        # Dont delete anything
+        self.compare false
+      end 
 
-            attr_accessor :blocksrc
-            attr_accessor :blocktitle
-            attr_accessor :blockname
+      # Save to file
+      # TODO: delete files in cms/Blocks/Modules
+      def dump (filepath = BLOCKS_PATH)
+        # Compare saved Hash with existing files in cms/Blocks/Modules
+        # Delete files which are not in the Hash anymore
+        self.compare true
 
-            # the blockname format is not specified. It can be with ending or without
-            #   it throws an ArgumentError whith a message whats went wrong
-            def initialize (blockname) # {{{
+        # Save the .yaml
+        File.open(filepath, 'w') do |out|
+          YAML::dump(@source, out)
+        end
+      end 
 
-                # if the blockname is with ending, it'll be cutted
-                @blockfqn = File.join(Config::SYSTEM.path['root'],Config::SYSTEM.path['module'],Config::SYSTEM.path['blocks'])
-                if blockname =~ /.*\.#{Config::SYSTEM.extensions['block']}$/
-                    @blockfqn = File.join(@blockfqn,blockname)
-                    blockname = blockname[0..-1*(Config::SYSTEM.extensions['block'].length+2)]
-                else
-                    @blockfqn = File.join(@blockfqn,blockname+'.'+Config::SYSTEM.extensions['block'])
-                end
+      # }}}
 
-                @blockname = blockname
-            end # }}}
+      # {{{ Change values
 
-            def setBlocktype type
-                require File.join('cms','Core','BlockModules',type)
-                @blocktype = CMS::Core::BlockModules.const_get(type).new(@blockname,@blocktitle,@blocksrc)
+      def set_blocktype (name, type)
+
+        check_block name
+        check_type type
+
+        @source[name]['type'] = type
+
+        self
+      end
+
+      # Remove block
+      def rm_block name
+        check_block name
+
+        @source.delete_if {|k,v| k == name}
+
+        self
+      end 
+
+      # Add a block
+      def add_block (name, title, type)
+        raise "Block already exists: #{name}" if @source.key? name
+
+        @source[name] = {'title' => title, 'type' => type}
+        self
+      end
+
+      # Update and compare cms/Blocks/Modules with @source
+      def compare (delete = false, dirpath = MODULE_PATH)
+        dir = Dir.new dirpath
+        dir.each do |filename|
+          break unless (filename =~ /^\./).nil?
+
+          # Cut the .blk ending
+          filename = filename[0..-5] unless (filename =~ /.+\.blk$/).nil?
+
+          # filename is not in the @source yet
+          unless @source.key? filename
+            if delete # Delete the file if delete is true
+              # TODO: Ask first
+              puts "Removing block: #{filename}"
+              File.delete(File.join(dirpath,filename))
+            else # Otherwise, add the new block to the Hash
+              puts "Adding new block: #{filename}"
+              self.add_block(filename, String.new, nil)
             end
+          end
 
-            def getBlocktype
-                return @blocktype.class.to_s
-            end
+        end
 
-            def exist?
-              if not File.exist? BLOCK_FILE_PATH
-                # if the yaml file doesnt exist, no page exists
-                return false
-              else
-                # otherwise load the file
-                blockfile = YAML::load_file BLOCK_FILE_PATH
-                if blockfile.include? @blockname
-                    return true
-                end
-              end
+        self
+      end
 
-              return false
-            end
+      # }}}
 
-            def dump # {{{
-                if @blocksrc
-                    File.open(@blockfqn,File::WRONLY|File::TRUNC|File::CREAT) do |f|
-                        @blocksrc.each {|l| f << l}
-                    end
-                else
-                    FileUtils.touch @blockfqn
-                end
+      # {{{ Get methods
 
-                if not File.exist? BLOCK_FILE_PATH
-                    # if the yaml file doesnt exist, create an empty list,
-                    blockfile = []
-                else
-                    # otherwise load the file
-                    blockfile = YAML::load_file BLOCK_FILE_PATH
-                end
+      def get_blocktype (name)
+        check_block name
 
-                # adds the metainformation to the yaml-file 
-                if blockfile.include? @blockname
-                    i = blockfile.index @blockname
-                end
-                blockfile += [@blockname,[@blocktitle,self.getBlocktype]]
+        raise "No type set yet: #{name}" if @source[name]['type'].nil?
+        @source[name]['type']
+      end
 
-                #TODO: file modifier oO
-                File.open(BLOCK_FILE_PATH, 'w') do |out|
-                    YAML::dump(blockfile, out )
-                end
+      # }}}
 
-                @blocktype.afterDump
+      # {{{ Questions
 
-            end # }}}
+      def exist? name
+        @source.key? name
+      end
 
-            # if the block was already existent and should only be changed, instead of a
-            # first dump, a load gets the blocksource from the file
-            def load # {{{
-                @blocksrc = ''
-                IO.readlines(@blockfqn).each do |l|
-                    @blocksrc += l
-                end
+      # Raise error if no such block
+      def check_block name
+        raise "No such block: #{name}" if @source.key? name
+      end
 
-                # get metainformation
-                blockfile = YAML::load_file BLOCK_FILE_PATH
-                if index=blockfile.index(@blockname)
-                    @blocktitle = blockfile[index+1][0]
-                    self.setBlocktype(blockfile[index+1][1].split('::').last)
-                end
-                @blocktype.afterLoad
-            end # }}}
+      # Raise error if no such module
+      def check_type type
+        raise "No such type: #{type}" unless Modules.constants.include? type
+      end
 
+      # }}}
 
-            # removes all the crap.. THE BLOCK WILL BE ERASED! :P
-            def delete # {{{
-                File.delete @blockfqn
-
-                @blocktype.beforeDeletion
-
-                blockfile = YAML::load_file BLOCK_FILE_PATH
-                blockfile -= [@blockname,[@blocktitle,@blocktype]]
-
-                File.open(BLOCK_FILE_PATH, 'w') do |out|
-                    YAML.dump(blockfile, out )
-                end
-
-            end # }}}
-
-            def html
-                @blocktype.html
-            end
-
-        end # }}}
-
-
-
-    end
+    end 
+  end
 end
