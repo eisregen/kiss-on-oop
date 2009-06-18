@@ -9,106 +9,92 @@
 #
 
 module CMS
-    module Core
+  module Core
 
-        require File.join('cms','Config','Settings')
+    require File.join('cms','Config','Settings')
 
-        require File.join(Config::SYSTEM.path['root'],'Utils','Utils')
-        require File.join(Config::SYSTEM.path['root'],'Core','Block')
+    require File.join('cms','Utils','Utils')
+    require File.join('cms','Core','Block')
 
-        PAGE_FILE_PATH = File.join(Config::SYSTEM.path['root'],Config::SYSTEM.path['module'],Config::SYSTEM.path['pages'],Config::SYSTEM.path['page_file'])
+    PAGE_FILE_PATH = File.join('cms','Core','PageFiles','pages.yaml')
 
+    class Page
 
-        #    Dir.open(BLOCK_MODULE_PATH).select { |d| d =~ /.*\.rb$/ }.each do |f|
-        #        require File.join(BLOCK_MODULE_PATH,f) 
-        #    end
+      #attr_accessor :name
+      #attr_accessor :title
+      #attr_accessor :blocks
 
+      def initialize (hash = nil, current = nil)
+        @file = hash if hash.is_a? Hash
+        @current = current if current.is_a? String
+      end
 
-        # IT IS SITLL CLASS BLOCK FOR NOW, LITTLE COPYPASTA :P
-        # {{{ Block definition
-        class Page
+      # {{{ Save and load
 
-            attr_accessor :pagename
-            attr_accessor :pagetitle
-            attr_accessor :blocks
+      def load (name, filepath = PAGE_FILE_PATH)
+        # return a new page with the loaded data
+        data = (YAML::load_file filepath) if File.exist? filepath
+        Page.new data
+      end
 
-            def initialize (pagename) # {{{
-                @pagename = pagename
-            end # }}}
+      def dump (filepath = PAGE_FILE_PATH)
+        File.open(filepath, 'w') do |out|
+          YAML::dump(@file, out)
+        end
 
-            def exist?
-              if not File.exist? PAGE_FILE_PATH
-                # if the yaml file doesnt exist, no page exists
-                return false
-              else
-                # otherwise load the file
-                pagefile = YAML::load_file PAGE_FILE_PATH
-                if pagefile.include? @pagename
-                    return true
-                end
-              end
+        # Return self
+        self
+      end
 
-              return false
-            end
+      # }}}
 
-            def dump # {{{
-                if @blocks
-                    if not File.exist? PAGE_FILE_PATH
-                        # if the yaml file doesnt exist, create an empty list,
-                        pagefile = []
-                    else
-                        # otherwise load the file
-                        pagefile = YAML::load_file PAGE_FILE_PATH
-                    end
+      # {{{ Questions
 
-                    # adds the metainformation to the yaml-file TODO: file modifier oO
-                    if pagefile.include? @pagename
-                        i = pagefile.index @pagename
-                    end
-                    pagefile += [@pagename,[@pagetitle,@blocks]]
+      # See if self is empty or not
+      def empty?
+        (not @file.is_a?(Hash)) || @file.empty?
+      end
 
-                    File.open(PAGE_FILE_PATH, 'w') do |out|
-                        YAML::dump(pagefile, out )
-                    end
-                    return true
-                end
-                false
-            end # }}}
+      # }}}
 
-            def load # {{{
-                # get metainformation
-                pagefile = YAML::load_file PAGE_FILE_PATH
-                if index=pagefile.index(@pagename)
-                    @pagetitle = pagefile[index+1][0]
-                    @blocks = pagefile[index+1][1]
-                end
+      # {{{ Get methods
 
-            end # }}}
+      # Get the title (String) of a given page
+      def title (name)
+        raise "No such page: #{name}" unless ((not self.empty?) && (@file.key? name))
+        @file[name]['title']
+      end
 
-            # removes all the crap..
-            def delete # {{{
-                pagefile = YAML::load_file PAGE_FILE_PATH
-                pagefile -= [@pagename,[@pagetitle,@blocks]]
+      # Get the blocks (Array of String) of a given page
+      def blocks (name)
+        raise "No such page: #{name}" unless ((not self.empty?) && (@file.key? name))
+        @file[name]['blocks']
+      end
 
-                File.open(PAGE_FILE_PATH, 'w') do |out|
-                    YAML.dump(pagefile, out )
-                end
+      # Get the names (Array of String) of every page
+      def all_names
+        return Array.new if self.empty?
+        @file.keys
+      end
 
-            end # }}}
+      # }}}
 
-            def html # {{{
-                html = ''
-                @blocks.each do |block|
-                   blk = Core::Block.new block
-                   blk.load
-                   html+=blk.html+"\r\n\r\n"
-                end
-                return html
-            end # }}}
+      # {{{ Change values
 
-        end # }}}
+      # Removes one page
+      def rm_page (name)
+        result = @file
+
+        raise "No such page: #{name}" unless result.key? name
+
+        result.delete_if {|k,v| k == name}
+      end 
+
+      # }}}
+
+    end 
 
 
 
-    end
+  end
 end

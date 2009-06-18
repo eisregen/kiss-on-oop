@@ -59,7 +59,7 @@ module CMS
         end
     end
 
-#rescue => err
-    #puts "An error occurred: #{err}"
+rescue => err
+    puts "An error occurred: #{err}"
 
 end

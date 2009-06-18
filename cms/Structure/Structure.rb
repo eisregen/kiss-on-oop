@@ -22,14 +22,15 @@ module CMS
 
       # Create Structure from a given Hash
       def initialize (hash = nil)
-        @struct = hash if hash.class == Hash
+        @struct = hash if hash.is_a? Hash
       end
 
       # {{{ Save and load
 
       # Load structure from filepath
       def load (filepath = STRUCT_PATH)
-        Structure.new(YAML::load File.open(filepath, 'r'))
+        # TODO: Check if file exists
+        Structure.new(YAML::load_file filepath)
       end
 
       # Save to YAML
@@ -134,9 +135,7 @@ module CMS
       # Remove a page, drop children (Warning: dont ask)
       def rm_page (name) # TODO
         # Raise error if name is not in structure
-        if not self.is_elem? name
-          raise "No such page: #{name}"
-        end
+        raise "No such page: #{name}" unless self.is_elem? name
 
         result = @struct
 
