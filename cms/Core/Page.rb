@@ -41,9 +41,6 @@ module CMS
         File.open(filepath, 'w') do |out|
           YAML::dump(@file, out)
         end
-
-        # Return self
-        self
       end
 
       # }}}

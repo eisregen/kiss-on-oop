@@ -38,7 +38,6 @@ module CMS
         File.open(filepath, 'w') do |out|
           YAML::dump(@struct, out)
         end
-        self
       end
 
       # }}}
