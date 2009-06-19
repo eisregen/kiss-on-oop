@@ -9,7 +9,6 @@
 #
 #       mkstruct <name> [<parent>] [-r]
 #       rmstruct <name> [-f]
-#       chstruct <name> [<parent>]
 #       mvstrcut <name> count
 #       lsstruct
 #       

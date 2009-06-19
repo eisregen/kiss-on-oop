@@ -8,63 +8,59 @@
 #   ...
 
 module CMS
-    module Template
+  module Template
 
-        require 'yaml'
+    require 'yaml'
 
-        class Template
+    class Template
 
-            def initialize (config)
-                if not File.exist? config
-                    puts 'file doesn\'t exist'
-                else
-                    tpl = YAML::load_file config
-                    if tpl['substitution']
-                        @constants = Hash.new
-                        tpl['substitution'].each do |key,value|
-                            @constants[key] = value
-                        end
-                    else
-                        puts 'substitution segment not found'
-                    end
-                end
-            end
+      def initialize (config = 'template.yaml')
+        raise 'Configfile doesn\'t exist'           unless File.exist? config
 
-            def isKey? (key)
-                return true if @constants[key]
-                return false
-            end
+        tpl = YAML::load_file config
 
-            def getValue (key)
-                if isKey? key
-                    @constants[key]
-                end
-            end
+        raise 'Substitution-segment doesn\'t exist' unless tpl['substitution']
 
-            def getKeys
-                keys = []
-                @constants.each_key do |k|
-                    keys << k
-                end
-                return keys
-            end
-
-            def setKey (key,value)
-                @constants[key] = value
-            end
-
-            def parse (string)
-                @constants.each do |k,v|
-                    string.gsub!('{{'+k+'}}',v)
-                    puts '{{'+k+'}} --> '+v
-                end
-                string
-            end
-
-            def parseRecursively (string)
-            end
-
+        @constants = Hash.new
+        tpl['substitution'].each do |key,value|
+          @constants[key] = value
         end
+      end
+
+      def is_key? (key)
+        if @constants[key]
+      end
+
+      def get_value (key)
+        raise 'Key not found' unless isKey? key
+        @constants[key]
+      end
+
+      def get_keys
+        keys = Array.new
+        @constants.each_key do |k|
+          keys << k
+        end
+        keys
+      end
+
+      def set_key (key,value)
+        @constants[key] = value
+        self
+      end
+
+      def parse (string)
+        @constants.each do |k,v|
+          string.gsub!('{{'+k+'}}',v)
+          puts '{{'+k+'}} --> '+v
+        end
+        string
+      end
+
+      def parseRecursively (string)
+      end
 
     end
+
+  end
 end
