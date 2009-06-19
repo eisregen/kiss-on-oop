@@ -111,7 +111,7 @@ module CMS
     # {{{ lsblock help
     def Userspace.lsblock_help (arg)
       puts 'Show all blocks.'
-      puts 'Options:  [-n <name> | -t <type> | -T <title]'
+      puts 'Options:  [-n <name> | -t <type> | -T <title>]'
     end # }}}
 
 

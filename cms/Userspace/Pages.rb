@@ -40,17 +40,12 @@ module CMS
 
       blocks = Array.new
       blocknames.each do |b|
-        tmp = CMS::Core::Block.new(b)
-        raise 'Block '+b+' does not exist' unless tmp.exist?
-        tmp.load
-        blocks << tmp
+        raise 'Block '+b+' does not exist' unless BLOCKS.exist? b
+        blocks << b
       end
 
       PAGES.add_page(name, title, blocks).dump
 
-      #blocks.each do |b|
-        #puts b.html
-      #end
     end # }}}
 
     #TODO
@@ -70,24 +65,18 @@ module CMS
       end
     end # }}}
 
-    ## everything beyond THIS Line is copypasta for Userspace/Block.rb -- don't mind   
 
     # {{{ rmpage
     def Userspace.rmpage args
-      if !args || args.size < 1
-        raise 'Not enough arguments'
-      end
-      blockname = args[0]
+      raise 'Not enough arguments' if !args || args.size < 1
 
-      if not Utils.valid? blockname
-        raise 'Invalid blockname'
-      elsif not File.exist? fqn = File.join(Config::SYSTEM.path['root'],'Core',Config::SYSTEM.path['blocks'],blockname+'.'+Config::SYSTEM.extensions['block'])
-        raise 'Block doesn\'t exist'
-      else
-        block = Core::Block.new blockname
-        block.load
-        block.delete
-      end
+      name = args[0]
+      
+      raise 'Invalid pagename'   unless Utils.valid? name
+      raise 'Page doesn\'t exist' unless PAGES.exist? name
+
+      PAGES.rm_page(name).dump
+
     end # }}}
     # {{{ rmpage description
     def Userspace.rmpage_description
@@ -107,109 +96,69 @@ module CMS
 
     # {{{ lspage
     def Userspace.lspage args
-      if !args || args.size < 1
-        block_path = File.join(Config::SYSTEM.path['root'],'Core',Config::SYSTEM.path['blocks'])
+      if (not args.nil?) && args.size == 2
+        opt = args[0]
+        var = args[1]
+      end
 
-        Dir.open(block_path).select { |d| d =~ /.*\.#{Config::SYSTEM.extensions['block']}$/ }.each do |b|
-          puts b[0..-1*(Config::SYSTEM.extensions['block'].length+2)]
+      PAGES.get_names.each do |name|
+        title = PAGES.get_title name
+        blocks = PAGES.get_blocks name
+
+        case opt
+        when '-n' then next unless name  == var
+        when '-T' then next unless type  == var
         end
 
-        return
+        puts "Page:    " + name
+        puts "Title:   " + title
+        blocks.each do |block|
+          if block == blocks.first
+            puts "Blocks   - " + block
+          else
+            puts "         - " + block
+          end
+        end
+        puts "\n\n"
       end
 
-      blockname = args[0]
-
-      if not Utils.valid? blockname
-        raise 'Invalid blockname'
-      elsif not File.exist? File.join(Config::SYSTEM.path['root'],'Core',Config::SYSTEM.path['blocks'],blockname+'.'+Config::SYSTEM.extensions['block'])
-        raise 'Block doesn\'t exist'
-      else
-        block = Core::Block.new blockname
-        block.load
-        puts 'blockname:   '+block.blockname
-        puts 'blocktitle:  '+block.blocktitle
-        puts 'blocktype:   '+block.blocktype
-      end
     end # }}}
     # {{{ lspage description
     def Userspace.lspage_description
-      puts 'is used for listing of blocks'
+      puts 'Show all pages.'
     end # }}}
     # {{{ lspage help
     def Userspace.lspage_help (arg)
-      if not arg
-        puts 'lspage can be used to show all blocks.'
-        puts 'Besides it can be used to view the details of a block.'
-        puts 'For that, the following argument should be given:'
-        puts '  [blockname]'
-      else
-        puts 'help accepts no additional arguments'
-      end
+      puts 'Show all blocks.'
+      puts 'Options:  [-n <name> | -T <title>]'
     end # }}}
 
 
     # {{{ chpage
     def Userspace.chpage args
-      if !args || args.length < 2
-        raise 'Not enough arguments'
+      raise 'Not enough arguments' if !args || args.length < 3
+
+      name = args[0]
+      opt = args[1]
+      val = args[2]
+
+      raise 'Invalid pagename'   unless Utils.valid? name
+      raise 'Page doesn\'t exist' unless PAGES.exist? name
+
+      case opt
+      when '-n' then PAGES.set_name(name,val).dump
+      when '-T' then PAGES.set_title(name,val).dump
+      else raise 'Wrong argument'
       end
-
-      if not Utils.valid? args[0]
-        raise 'Invalid blockname'
-        return
-      end
-
-      blockname = args[0]
-      action = args[1]
-
-      if action=='content'
-        system Config::SYSTEM.editor+' '+File.join(Config::SYSTEM.path['root'],'Core',Config::SYSTEM.path['blocks'],blockname+'.'+Config::SYSTEM.extensions['block'])
-      else
-        if not val=args[2]
-          raise 'Not enough arguments'
-        else
-          block = Core::Block.new blockname
-          block.load
-          case action
-          when 'name'
-            if Util.valid? val
-              block.blockname = val
-            else
-              raise 'Invalid new blockname'
-            end
-          when 'title'
-            puts block.blocktitle
-            block.blocktitle = val
-            puts block.blocktitle
-          when 'type'
-            if File.exist? File.join(Config::SYSTEM.path['root'],'Core',Config::SYSTEM.path['block_modules'],val+'.rb')
-              block.blocktype = val
-            else
-              raise 'Unknown blocktype'
-            end
-          else
-            raise 'Invalid action'
-          end
-          block.dump
-        end
-      end
-
     end # }}}
     # {{{ chpage description
     def Userspace.chpage_description
-      puts 'is used to change attributes of blocks'
+      puts 'Modificates attributes of a page.'
     end # }}}
     # {{{ chpage help
     def Userspace.chpage_help (arg)
-      if not arg
-        puts 'chpage can be used to change the block-attributes.'
-        puts 'For changing the content of a block, type: '
-        puts '  [blockname] [content]'
-        puts 'For modification of one of its arguments, type:'
-        puts '  [blockname] [name|title|type] [value]'
-      else
-        puts 'help accepts no additional arguments'
-      end
+      puts 'Modificates attributes of a page.:'
+      puts 'Options: [blockname] [-n <name> | -T <title>]'
     end # }}}
 
 

@@ -51,7 +51,7 @@ module CMS
 
       # See if self is empty or not
       def empty?
-        (not @source.is_a?(Hash)) || @file.empty?
+        (not @source.is_a?(Hash))
       end
 
       # Does a page exist?
@@ -64,21 +64,45 @@ module CMS
       # {{{ Get methods
 
       # Get the title (String) of a given page
-      def title (name)
+      def get_title (name)
         raise "No such page: #{name}" unless ((not self.empty?) && (@source.key? name))
         @source[name]['title']
       end
 
       # Get the blocks (Array of String) of a given page
-      def blocks (name)
+      def get_blocks (name)
         raise "No such page: #{name}" unless ((not self.empty?) && (@source.key? name))
         @source[name]['blocks']
       end
 
       # Get the names (Array of String) of every page
-      def all_names
+      def get_names
         return Array.new if self.empty?
         @source.keys
+      end
+
+      # }}}
+
+      # {{{ Set methods
+
+      # Set the title (String) of a given page
+      def set_title (name,val)
+        raise "No such page: #{name}" unless ((not self.empty?) && (@source.key? name))
+        @source[name]['title'] = val
+        self
+      end
+
+      # Set the blocks (Array of String) of a given page
+      def set_blocks (name,val)
+        raise "No such page: #{name}" unless ((not self.empty?) && (@source.key? name))
+        @source[name]['blocks'] = val
+        self
+      end
+
+      # Set the names (Array of String) of every page
+      def set_name (name,val)
+        # TODO
+        self
       end
 
       # }}}
