@@ -39,7 +39,7 @@ module CMS
 
       struct = Structure::Structure.new.load
 
-      if not struct.is_elem? name
+      unless struct.is_elem? name
         struct.add_page(name, parent)
       else
         struct.rm_page(name) if replace

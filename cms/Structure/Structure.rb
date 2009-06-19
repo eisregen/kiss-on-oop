@@ -22,6 +22,7 @@ module CMS
 
       # Create Structure from a given Hash
       def initialize (hash = nil)
+        @struct = Hash.new
         @struct = hash if hash.is_a? Hash
       end
 
@@ -104,31 +105,28 @@ module CMS
       def add_page (name, parent = nil)
         parent = 'top' if parent.nil? || parent.empty?
 
-        result = @struct
-
-
         # Raise error if name is already in structure
         if self.is_elem? name
           raise "Page already in structure: #{name}"
 
           # If parent already exist, add name to the list
         elsif self.is_parent? parent
-          result[parent] << name
+          @struct[parent] << name
 
           # Add name to the parent list
         elsif self.is_elem? parent
-          result[parent] = [name]
+          @struct[parent] = [name]
 
           # Create new 'top' if @struct is empty
         elsif self.is_empty? && parent == 'top'
-          result = {parent => [name]}
+          @struct = {parent => [name]}
 
           # Raise error
         else
           raise "No such parent: #{parent}"
         end
 
-        Structure.new(result)
+        self
       end
 
 

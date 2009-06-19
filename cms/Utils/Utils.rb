@@ -16,17 +16,19 @@ module CMS
     # Get the tree structure as an array of Strings
     def Utils.tree_struct (parent, struct = STRUCT)
 
-      result = []
-      struct.get_children(parent).each do |child|
-
+      result = Array.new
+      children = struct.get_children(parent).each do |child|
         result <<= child
         if struct.has_children? child
           result.concat(get_tree(child).map {|s| " |-" + s})
         end
-
       end
 
       result
+    rescue => err
+      result = Array.new
+      result << "Structure is empty."
+      result << "An error occurred: " + err
     end
 
     # }}}
