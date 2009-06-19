@@ -35,7 +35,8 @@ module CMS
       def load (filepath = PAGES)
         # return a new page with the loaded data
         data = (YAML::load_file filepath) if File.exist? filepath
-        Pages.new data
+        @source = data if data.is_a? Hash
+        self
       end
 
       def dump (filepath = PAGES)
