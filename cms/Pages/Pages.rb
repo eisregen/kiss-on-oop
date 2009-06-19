@@ -88,8 +88,7 @@ module CMS
       def add_page (name, title, blocks)
         raise "Page already exists: #{name}" if @source.key? name
 
-        @source[name]['title'] = title
-        @source[name]['blocks'] = blocks
+        @source[name] = {'title' => title, 'blocks' => blocks}
 
         self
       end
