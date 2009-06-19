@@ -14,7 +14,7 @@ module CMS
     # {{{ Structure
 
     # Get the tree structure as an array of Strings
-    def Utils.tree_struct (parent, struct = STRUCT)
+    def Utils.tree_struct (parent, struct = CMS::STRUCT)
 
       result = Array.new
       children = struct.get_children(parent).each do |child|
