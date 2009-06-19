@@ -1,6 +1,11 @@
 --- 
-home:
-    title: The main page
-    blocks:
-        - block1
-        - block2
+testpage: 
+  blocks: 
+  - block1
+  - block3
+  title: the 2nd page
+home: 
+  blocks: 
+  - block1
+  - block2
+  title: titleee
