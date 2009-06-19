@@ -30,7 +30,8 @@ module CMS
       # Load structure from filepath
       def load (filepath = STRUCT_PATH)
         data = (YAML::load_file filepath) if File.exist? filepath
-        Structure.new data
+        @struct = data if data.is_a? Hash
+        self
       end
 
       # Save to YAML
