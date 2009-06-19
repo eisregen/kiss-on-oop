@@ -41,7 +41,6 @@ module CMS
 
       # Add and save
       BLOCKS.add_block(name, title, type).dump
-
     end # }}}
     # {{{ mkblock description
     def Userspace.mkblock_description
