@@ -135,6 +135,17 @@ module CMS
         @source[name]['title']
       end
 
+      def get_src (name)
+        check_block name
+
+        string  = String.new
+
+        IO.readlines(File.join('cms','Blocks','Files',name+'.blk')).each do |line|
+          string += line
+        end
+        string
+      end
+
       # Get all blocks
       def get_names
         @source.keys
