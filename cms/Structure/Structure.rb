@@ -67,34 +67,23 @@ module CMS
 
       # Has children?
       def has_children? (name)
-        not (self.get_children(name).nil? || self.get_children(name).empty?)
+        not self.get_children(name).empty?
       rescue
         false
       end
 
       # Is parent?
       def is_parent? (name)
-        return false if @struct.nil? || @struct.empty?
         @struct.key? name
+      rescue
+        false
       end
 
       # Is element of the structure?
       def is_elem? (name)
-
-        return false if @struct.nil? || @struct.empty?
-
-        @struct.each do |key,list|
-          if list.include? name
-            return true
-          end
-        end
-
-        return false
-      end
-
-      # Is structure empty?
-      def is_empty?
-        @struct.nil? || @struct.empty?
+        @struct.each{|key,list| return true if list.include? name }
+      rescue
+        false
       end
 
       # }}}
@@ -135,18 +124,16 @@ module CMS
         # Raise error if name is not in structure
         raise "No such page: #{name}" unless self.is_elem? name
 
-        result = @struct
-
         # Drop parent
         if self.is_parent? name
-          result.delete_if {|k,v| k == name}
+          @struct.delete name
         end
 
         # Get parent of page and remove it
         parent = self.get_parent name
-        result[parent] = result[parent].map{|x| x unless x == name}.compact
+        @struct[parent].delete name
 
-        Structure.new(result)
+        self
       end
 
       # Move a page up down in the structure
@@ -155,16 +142,14 @@ module CMS
           raise "No such page: #{name}"
         end
 
-        result = @struct
-
         # Get parent
         parent = self.get_parent name
         # Filter out name & insert at count-1 again
-        result[parent] = result[parent].map{|x| x unless x == name}.compact
+        @struct[parent].delete name
         n = count - 1
-        result[parent] = (result[parent].take(n) << [name] << result[parent].drop(n)).flatten
+        @struct[parent] = (@struct[parent].take(n) << [name] << @struct[parent].drop(n)).flatten
 
-        Structure.new(result)
+        self
       end
 
       # }}}
